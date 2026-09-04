@@ -10,8 +10,6 @@
 Changes
 lib/SPVM/UV.build
 lib/SPVM/UV.c
-lib/SPVM/UV.native/include/.gitkeep
-lib/SPVM/UV.native/src/.gitkeep
 lib/SPVM/UV.pm
 lib/SPVM/UV.spvm
 lib/SPVM/UV/Callback/Async.pm
@@ -75,7 +73,7 @@ lib/SPVM/UV/Request/Write.pm
 lib/SPVM/UV/Request/Write.spvm
 lib/SPVM/UV/Resource/UV.build
 lib/SPVM/UV/Resource/UV.native/include/.gitkeep
-lib/SPVM/UV/Resource/UV.native/include/spvm_go_uv.h
+lib/SPVM/UV/Resource/UV.native/include/spvm_uv.h
 lib/SPVM/UV/Resource/UV.native/src/.gitkeep
 lib/SPVM/UV/Resource/UV.pm
 lib/SPVM/UV/Resource/UV.spvm

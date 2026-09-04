@@ -131,7 +131,18 @@ package MY {
       $options->{order_only_dependent_files} = ['pm_to_blib'];
       
       $options->{native_classes} = [
-        'UV'
+        'UV',
+        'UV::Constant',
+        'UV::Loop',
+        'UV::Handle',
+        'UV::Handle::Idle',
+        'UV::Handle::Timer',
+        'UV::Handle::Poll',
+        'UV::Handle::Async',
+        'UV::Handle::Pipe',
+        'UV::Handle::Stream',
+        'UV::Request',
+        'UV::Request::Write',
       ];
       
       $options->{precompile_classes} = [
