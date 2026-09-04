@@ -1,5 +1,5 @@
-#ifndef SPVM_GO_UV_H
-#define SPVM_GO_UV_H
+#ifndef SPVM_UV_H
+#define SPVM_UV_H
 
 typedef struct {
   SPVM_ENV* env;
