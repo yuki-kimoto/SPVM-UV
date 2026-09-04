@@ -3,5 +3,5 @@
 
 class UV::Resource::UV {
   
-  version_from Go;
+  version_from UV;
 }
