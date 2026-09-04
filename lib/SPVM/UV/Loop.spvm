@@ -22,6 +22,7 @@ class UV::Loop : pointer {
   
   use Resource::UV;
   use UV::Resource::UV;
+  use Hash;
   
   # Class Variables
   our $DEFAULT_LOOP : UV::Loop;
