@@ -66,6 +66,12 @@ lib/SPVM/UV/Request/Write.build
 lib/SPVM/UV/Request/Write.c
 lib/SPVM/UV/Request/Write.pm
 lib/SPVM/UV/Request/Write.spvm
+lib/SPVM/UV/Resource/UV.build
+lib/SPVM/UV/Resource/UV.native/include/.gitkeep
+lib/SPVM/UV/Resource/UV.native/include/spvm_go_uv.h
+lib/SPVM/UV/Resource/UV.native/src/.gitkeep
+lib/SPVM/UV/Resource/UV.pm
+lib/SPVM/UV/Resource/UV.spvm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
