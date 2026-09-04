@@ -1,4 +1,4 @@
-package SPVM::Go::UV::ConfigBuilder;
+package SPVM::UV::ConfigBuilder;
 
 use parent 'SPVM::Builder::ConfigBuilder';
 
@@ -19,7 +19,7 @@ sub build_config {
   
   $config->use_resource('Go::Resource::UV');
   
-  $config->link_to('Go::UV');
+  $config->link_to('UV');
   
   $config;
 }
@@ -28,17 +28,17 @@ sub build_config {
 
 =head1 Name
 
-SPVM::Go::UV::ConfigBuilder - Config Builder for C<libuv>.
+SPVM::UV::ConfigBuilder - Config Builder for C<libuv>.
 
 =head1 Description
 
-SPVM::Go::UV::ConfigBuilder class is a config builder for C<libuv>.
+SPVM::UV::ConfigBuilder class is a config builder for C<libuv>.
 
 This class is a Perl module.
 
 =head1 Usage
 
-  my $config_builder = SPVM::Go::UV::ConfigBuilder->new;
+  my $config_builder = SPVM::UV::ConfigBuilder->new;
   
   my $config = $config_builder->build_config;
 
@@ -46,9 +46,9 @@ This class is a Perl module.
 
 =head2 new
 
-  my $config_builder = SPVM::Go::UV::ConfigBuilder->new;
+  my $config_builder = SPVM::UV::ConfigBuilder->new;
 
-Create a new L<SPVM::Go::UV::ConfigBuilder> object and returns it.
+Create a new L<SPVM::UV::ConfigBuilder> object and returns it.
 
 =head1 Instance Methods
 
@@ -62,7 +62,7 @@ Builds L<SPVM::Builder::Config> object for C<libuv>, and returns it.
 
 =over 2
 
-=item * L<SPVM::Go::UV>
+=item * L<SPVM::UV>
 
 =back
 

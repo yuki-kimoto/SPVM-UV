@@ -5,15 +5,15 @@
 #include "uv.h"
 #include "spvm_go_uv.h"
 
-static const char* FILE_NAME = "Go/UV/Handle.c";
+static const char* FILE_NAME = "UV/Handle.c";
 
-void boot_Go__UV__Handle() {}
+void boot_UV__Handle() {}
 
-static void SPVM__Go__UV__Handle__close_cb(uv_handle_t* uv_handle) {
+static void SPVM__UV__Handle__close_cb(uv_handle_t* uv_handle) {
   
   int32_t error_id = 0;
   
-  SPVM__Go__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__Go__UV__Handle__HANDLE_DATA*)uv_handle->data;
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__UV__Handle__HANDLE_DATA*)uv_handle->data;
   
   SPVM_ENV* env = uv_handle_data->env;
   SPVM_VALUE* stack = uv_handle_data->stack;
@@ -29,7 +29,7 @@ static void SPVM__Go__UV__Handle__close_cb(uv_handle_t* uv_handle) {
     stack[1].oval = obj_uv_handle;
     env->call_instance_method_by_name(env, stack, "", 2, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) {
-      spvm_diag("[An exception is converted to a warning in SPVM__Go__UV__Handle__close_cb]\n%s", env->get_exception_chars(env, stack));
+      spvm_diag("[An exception is converted to a warning in SPVM__UV__Handle__close_cb]\n%s", env->get_exception_chars(env, stack));
       return;
     }
   }
@@ -49,7 +49,7 @@ static void SPVM__Go__UV__Handle__close_cb(uv_handle_t* uv_handle) {
   }
 }
 
-int32_t SPVM__Go__UV__Handle__close_safe(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Handle__close_safe(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -62,13 +62,13 @@ int32_t SPVM__Go__UV__Handle__close_safe(SPVM_ENV* env, SPVM_VALUE* stack) {
   uv_handle_t* uv_handle = env->get_pointer(env, stack, obj_uv_handle);
   
   if (!uv_is_closing(uv_handle)) {
-    uv_close(uv_handle, SPVM__Go__UV__Handle__close_cb);
+    uv_close(uv_handle, SPVM__UV__Handle__close_cb);
   }
   
   return 0;
 }
 
-int32_t SPVM__Go__UV__Handle__get_type(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Handle__get_type(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -83,7 +83,7 @@ int32_t SPVM__Go__UV__Handle__get_type(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Handle__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Handle__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   SPVM_OBJ* obj_uv_handle = stack[0].oval;
   
@@ -92,7 +92,7 @@ int32_t SPVM__Go__UV__Handle__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   if (!no_free) {
     uv_handle_t* uv_handle = env->get_pointer(env, stack, obj_uv_handle);
     
-    SPVM__Go__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__Go__UV__Handle__HANDLE_DATA*)uv_handle->data;
+    SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__UV__Handle__HANDLE_DATA*)uv_handle->data;
     
     env->free_memory_block(env, stack, uv_handle_data);
     uv_handle->data = NULL;

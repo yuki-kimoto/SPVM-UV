@@ -5,13 +5,13 @@
 #include "uv.h"
 #include "spvm_go_uv.h"
 
-static const char* FILE_NAME = "Go/UV/Handle/Stream.c";
+static const char* FILE_NAME = "UV/Handle/Stream.c";
 
-void SPVM__Go__UV__Handle__Stream__alloc_cb(uv_handle_t* uv_handle, size_t suggested_size, uv_buf_t* uv_buf) {
+void SPVM__UV__Handle__Stream__alloc_cb(uv_handle_t* uv_handle, size_t suggested_size, uv_buf_t* uv_buf) {
   
   int32_t error_id = 0;
   
-  SPVM__Go__UV__Handle__HANDLE_DATA* uv_handle_buffer = (SPVM__Go__UV__Handle__HANDLE_DATA*)uv_handle->data;
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_buffer = (SPVM__UV__Handle__HANDLE_DATA*)uv_handle->data;
   
   SPVM_ENV* env = uv_handle_buffer->env;
   SPVM_VALUE* stack = uv_handle_buffer->stack;
@@ -40,11 +40,11 @@ void SPVM__Go__UV__Handle__Stream__alloc_cb(uv_handle_t* uv_handle, size_t sugge
   uv_buf->len = buffer_length;
 }
 
-void SPVM__Go__UV__Handle__Stream__read_cb(uv_stream_t* uv_handle, ssize_t nread, const uv_buf_t* buf) {
+void SPVM__UV__Handle__Stream__read_cb(uv_stream_t* uv_handle, ssize_t nread, const uv_buf_t* buf) {
   
   int32_t error_id = 0;
   
-  SPVM__Go__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__Go__UV__Handle__HANDLE_DATA*)uv_handle->data;
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__UV__Handle__HANDLE_DATA*)uv_handle->data;
   
   SPVM_ENV* env = uv_handle_data->env;
   SPVM_VALUE* stack = uv_handle_data->stack;
@@ -68,13 +68,13 @@ void SPVM__Go__UV__Handle__Stream__read_cb(uv_stream_t* uv_handle, ssize_t nread
   stack[3].oval = obj_read_buffer;
   env->call_instance_method_by_name(env, stack, "", 4, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) {
-    spvm_diag("[An exception is converted to a warning in SPVM__Go__UV__Handle__Stream__read_cb]\n%s", env->get_exception_chars(env, stack));
+    spvm_diag("[An exception is converted to a warning in SPVM__UV__Handle__Stream__read_cb]\n%s", env->get_exception_chars(env, stack));
     return;
   }
   
 }
 
-int32_t SPVM__Go__UV__Handle__Stream__read_start(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Handle__Stream__read_start(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -119,7 +119,7 @@ int32_t SPVM__Go__UV__Handle__Stream__read_start(SPVM_ENV* env, SPVM_VALUE* stac
   
   uv_stream_t* uv_stream = env->get_pointer(env, stack, obj_uv_stream);
   
-  int32_t status = uv_read_start(uv_stream, SPVM__Go__UV__Handle__Stream__alloc_cb, SPVM__Go__UV__Handle__Stream__read_cb);
+  int32_t status = uv_read_start(uv_stream, SPVM__UV__Handle__Stream__alloc_cb, SPVM__UV__Handle__Stream__read_cb);
   
   if (!(status == 0)) {
     return env->die(env, stack, "uv_read_start failed. status=%d.", __func__, FILE_NAME, __LINE__, status);

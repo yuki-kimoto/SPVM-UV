@@ -5,13 +5,13 @@
 #include "uv.h"
 #include "spvm_go_uv.h"
 
-static const char* FILE_NAME = "Go/UV/Request/Write.c";
+static const char* FILE_NAME = "UV/Request/Write.c";
 
-void SPVM__Go__UV__Request__Write__write_cb(uv_write_t* uv_handle, int status) {
+void SPVM__UV__Request__Write__write_cb(uv_write_t* uv_handle, int status) {
   
   int32_t error_id = 0;
   
-  SPVM__Go__UV__Request__REQ_DATA* uv_req_data = (SPVM__Go__UV__Request__REQ_DATA*)uv_handle->data;
+  SPVM__UV__Request__REQ_DATA* uv_req_data = (SPVM__UV__Request__REQ_DATA*)uv_handle->data;
   
   SPVM_ENV* env = uv_req_data->env;
   SPVM_VALUE* stack = uv_req_data->stack;
@@ -28,24 +28,24 @@ void SPVM__Go__UV__Request__Write__write_cb(uv_write_t* uv_handle, int status) {
   stack[2].ival = status;
   env->call_instance_method_by_name(env, stack, "", 3, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) {
-    spvm_diag("[An exception is converted to a warning in SPVM__Go__UV__Request__Write__write_cb]\n%s", env->get_exception_chars(env, stack));
+    spvm_diag("[An exception is converted to a warning in SPVM__UV__Request__Write__write_cb]\n%s", env->get_exception_chars(env, stack));
     return;
   }
   
 }
 
-int32_t SPVM__Go__UV__Request__Write__new(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Request__Write__new(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
   uv_write_t* uv_req_write = env->new_memory_block(env, stack, sizeof(uv_write_t));
   
-  SPVM__Go__UV__Request__REQ_DATA* uv_req_data = env->new_memory_block(env, stack, sizeof(SPVM__Go__UV__Request__REQ_DATA));
+  SPVM__UV__Request__REQ_DATA* uv_req_data = env->new_memory_block(env, stack, sizeof(SPVM__UV__Request__REQ_DATA));
   uv_req_data->env = env;
   uv_req_data->stack = stack;
   uv_req_write->data = uv_req_data;
   
-  SPVM_OBJ* obj_uv_req_write = env->new_pointer_object_by_name(env, stack, "Go::UV::Request::Write", uv_req_write, &error_id, __func__, FILE_NAME, __LINE__);
+  SPVM_OBJ* obj_uv_req_write = env->new_pointer_object_by_name(env, stack, "UV::Request::Write", uv_req_write, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) return error_id;
   
   uv_req_data->obj_uv_req = obj_uv_req_write;
@@ -55,7 +55,7 @@ int32_t SPVM__Go__UV__Request__Write__new(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Request__Write__write(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Request__Write__write(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -107,7 +107,7 @@ int32_t SPVM__Go__UV__Request__Write__write(SPVM_ENV* env, SPVM_VALUE* stack) {
   uv_buf.base = (char*)buffer + buffer_offset;
   uv_buf.len = buffer_length;
   
-  int32_t status = uv_write(uv_req_write, uv_stream, &uv_buf, 1, SPVM__Go__UV__Request__Write__write_cb);
+  int32_t status = uv_write(uv_req_write, uv_stream, &uv_buf, 1, SPVM__UV__Request__Write__write_cb);
   
   if (!(status == 0)) {
     return env->die(env, stack, "uv_write failed. status=%d.", __func__, FILE_NAME, __LINE__, status);

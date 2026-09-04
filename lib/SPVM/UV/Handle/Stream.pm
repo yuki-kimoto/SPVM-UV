@@ -1,4 +1,4 @@
-package SPVM::Go::UV::Handle::Stream;
+package SPVM::UV::Handle::Stream;
 
 
 
@@ -8,25 +8,25 @@ package SPVM::Go::UV::Handle::Stream;
 
 =head1 Name
 
-SPVM::Go::UV::Handle::Stream - Stream Handle for libuv
+SPVM::UV::Handle::Stream - Stream Handle for libuv
 
 =head1 Description
 
-C<Go::UV::Handle::Stream> in L<SPVM> represents the stream handle for L<libuv|https://libuv.org/>, corresponding to the C<uv_stream_t> structure.
+C<UV::Handle::Stream> in L<SPVM> represents the stream handle for L<libuv|https://libuv.org/>, corresponding to the C<uv_stream_t> structure.
 
 =head1 Super Class
 
-L<Go::UV::Handle|SPVM::Go::UV::Handle>
+L<UV::Handle|SPVM::UV::Handle>
 
 =head1 Usage
 
-  use Go::UV::Handle::Stream;
+  use UV::Handle::Stream;
 
 =head1 Fields
 
 =head2 read_cb
 
-C<has read_cb : rw L<Go::UV::Callback::Read|SPVM::Go::UV::Callback::Read>;>
+C<has read_cb : rw L<UV::Callback::Read|SPVM::UV::Callback::Read>;>
 
 The callback called when data has been read from the stream.
 
@@ -52,7 +52,7 @@ The offset of the read buffer.
 
 =head2 read_start
 
-C<method read_start : void ($buffer : mutable string, $buffer_length : int, $cb : L<Go::UV::Callback::Read|SPVM::Go::UV::Callback::Read>, $buffer_offset : int = 0);>
+C<method read_start : void ($buffer : mutable string, $buffer_length : int, $cb : L<UV::Callback::Read|SPVM::UV::Callback::Read>, $buffer_offset : int = 0);>
 
 Starts reading data into C<$buffer> with length C<$buffer_length> and offset C<$buffer_offset> from the stream. 
 

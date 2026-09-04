@@ -5,15 +5,15 @@
 #include "uv.h"
 #include "spvm_go_uv.h"
 
-static const char* FILE_NAME = "Go/UV/Handle/Timer.c";
+static const char* FILE_NAME = "UV/Handle/Timer.c";
 
-void boot_Go__UV__Handle__Timer() {}
+void boot_UV__Handle__Timer() {}
 
-static void SPVM__Go__UV__Handle__Timer__timer_cb(uv_timer_t* uv_handle) {
+static void SPVM__UV__Handle__Timer__timer_cb(uv_timer_t* uv_handle) {
   
   int32_t error_id = 0;
   
-  SPVM__Go__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__Go__UV__Handle__HANDLE_DATA*)uv_handle->data;
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__UV__Handle__HANDLE_DATA*)uv_handle->data;
   
   SPVM_ENV* env = uv_handle_data->env;
   SPVM_VALUE* stack = uv_handle_data->stack;
@@ -28,13 +28,13 @@ static void SPVM__Go__UV__Handle__Timer__timer_cb(uv_timer_t* uv_handle) {
   stack[1].oval = obj_uv_handle;
   env->call_instance_method_by_name(env, stack, "", 2, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) {
-    spvm_diag("[An exception is converted to a warning in SPVM__Go__UV__Handle__Timer__timer_cb]\n%s", env->get_exception_chars(env, stack));
+    spvm_diag("[An exception is converted to a warning in SPVM__UV__Handle__Timer__timer_cb]\n%s", env->get_exception_chars(env, stack));
     return;
   }
   
 }
 
-int32_t SPVM__Go__UV__Handle__Timer__start(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Handle__Timer__start(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -52,7 +52,7 @@ int32_t SPVM__Go__UV__Handle__Timer__start(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   uv_timer_t* uv_timer = env->get_pointer(env, stack, obj_uv_timer);
   
-  int32_t status = uv_timer_start(uv_timer, SPVM__Go__UV__Handle__Timer__timer_cb, (uint64_t)timeout_msec, (uint64_t)interval_msec);
+  int32_t status = uv_timer_start(uv_timer, SPVM__UV__Handle__Timer__timer_cb, (uint64_t)timeout_msec, (uint64_t)interval_msec);
   
   if (!(status == 0)) {
     return env->die(env, stack, "uv_timer_start failed. status=%d.", __func__, FILE_NAME, __LINE__, status);
@@ -61,19 +61,19 @@ int32_t SPVM__Go__UV__Handle__Timer__start(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Handle__Timer__new(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Handle__Timer__new(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
   uv_timer_t* uv_timer = env->new_memory_block(env, stack, sizeof(uv_timer_t));
   
-  SPVM__Go__UV__Handle__HANDLE_DATA* uv_handle_data = env->new_memory_block(env, stack, sizeof(SPVM__Go__UV__Handle__HANDLE_DATA));
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = env->new_memory_block(env, stack, sizeof(SPVM__UV__Handle__HANDLE_DATA));
   uv_handle_data->env = env;
   uv_handle_data->stack = stack;
   
   uv_timer->data = uv_handle_data;
   
-  SPVM_OBJ* obj_uv_timer = env->new_pointer_object_by_name(env, stack, "Go::UV::Handle::Timer", uv_timer, &error_id, __func__, FILE_NAME, __LINE__);
+  SPVM_OBJ* obj_uv_timer = env->new_pointer_object_by_name(env, stack, "UV::Handle::Timer", uv_timer, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) return error_id;
   
   uv_handle_data->obj_uv_handle = obj_uv_timer;

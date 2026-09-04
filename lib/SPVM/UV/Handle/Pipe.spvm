@@ -1,13 +1,13 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class Go::UV::Handle::Pipe extends Go::UV::Handle::Stream {
+class UV::Handle::Pipe extends UV::Handle::Stream {
   
   use Resource::UV;
   use Go::Resource::UV;
   
   # Class Mehtods
-  native static method new : Go::UV::Handle::Pipe ();
+  native static method new : UV::Handle::Pipe ();
   
   # Instance Methods
   native method open : void ($fd : int);

@@ -1,4 +1,4 @@
-package SPVM::Go::UV::Handle::Pipe;
+package SPVM::UV::Handle::Pipe;
 
 
 
@@ -8,29 +8,29 @@ package SPVM::Go::UV::Handle::Pipe;
 
 =head1 Name
 
-SPVM::Go::UV::Handle::Pipe - Pipe Handle for libuv
+SPVM::UV::Handle::Pipe - Pipe Handle for libuv
 
 =head1 Description
 
-C<Go::UV::Handle::Pipe> in L<SPVM> represents the pipe handle for L<libuv|https://libuv.org/>, corresponding to the C<uv_pipe_t> structure.
+C<UV::Handle::Pipe> in L<SPVM> represents the pipe handle for L<libuv|https://libuv.org/>, corresponding to the C<uv_pipe_t> structure.
 
 =head1 Super Class
 
-L<Go::UV::Handle::Stream|SPVM::Go::UV::Handle::Stream>
+L<UV::Handle::Stream|SPVM::UV::Handle::Stream>
 
 =head1 Usage
 
-  use Go::UV::Handle::Pipe;
+  use UV::Handle::Pipe;
   
-  my $pipe = Go::UV::Handle::Pipe->new;
+  my $pipe = UV::Handle::Pipe->new;
 
 =head1 Class Methods
 
 =head2 new
 
-C<static method new : L<Go::UV::Handle::Pipe|SPVM::Go::UV::Handle::Pipe> ();>
+C<static method new : L<UV::Handle::Pipe|SPVM::UV::Handle::Pipe> ();>
 
-Creates a new L<Go::UV::Handle::Pipe|SPVM::Go::UV::Handle::Pipe> object, and returns it.
+Creates a new L<UV::Handle::Pipe|SPVM::UV::Handle::Pipe> object, and returns it.
 
 =head1 Instance Methods
 

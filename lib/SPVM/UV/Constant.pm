@@ -1,6 +1,6 @@
 =head1 Name
 
-Go::UV::Constant - Constants for libuv
+UV::Constant - Constants for libuv
 
 =head1 Class Methods
 

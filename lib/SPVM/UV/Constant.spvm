@@ -1,4 +1,4 @@
-class Go::UV::Constant {
+class UV::Constant {
   
   use Resource::UV;
   use Go::Resource::UV;

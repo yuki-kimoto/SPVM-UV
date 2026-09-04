@@ -1,4 +1,4 @@
-package SPVM::Go::UV;
+package SPVM::UV;
 
 
 
@@ -8,18 +8,18 @@ package SPVM::Go::UV;
 
 =head1 Name
 
-SPVM::Go::UV - libuv Binding
+SPVM::UV - libuv Binding
 
 =head1 Description
 
-Go::UV class in L<SPVM> is a L<libuv|https://libuv.org/> binding.
+UV class in L<SPVM> is a L<libuv|https://libuv.org/> binding.
 
 =head1 Usage
 
-  use Go::UV::Loop;
-  use Go::UV::Constant as UV_C;
+  use UV::Loop;
+  use UV::Constant as UV_C;
   
-  my $uv_loop = Go::UV::Loop->new;
+  my $uv_loop = UV::Loop->new;
   
   # Do someting
   
@@ -27,12 +27,12 @@ Go::UV class in L<SPVM> is a L<libuv|https://libuv.org/> binding.
   
 Timer:
 
-  use Go::UV::Handle::Timer;
+  use UV::Handle::Timer;
   
   my $timeout_msec = 3_000;
-  my $uv_timer = Go::UV::Handle::Timer->new;
+  my $uv_timer = UV::Handle::Timer->new;
   $uv_loop->timer_init($uv_timer);
-  my $timer_cb = method : void ($uv_timer : Go::UV::Handle::Timer) {
+  my $timer_cb = method : void ($uv_timer : UV::Handle::Timer) {
     
     # Do something
     
@@ -42,11 +42,11 @@ Timer:
 
 Socket IO:
 
-  use Go::UV::Handle::Poll;
+  use UV::Handle::Poll;
   
-  my $uv_poll = Go::UV::Handle::Poll->new;
+  my $uv_poll = UV::Handle::Poll->new;
   $uv_loop->poll_init($uv_poll, $fd);
-  my $poll_cb = method : void ($uv_poll : Go::UV::Handle::Poll, $status : int, $events : int) {
+  my $poll_cb = method : void ($uv_poll : UV::Handle::Poll, $status : int, $events : int) {
     
     # Do something
     
@@ -68,41 +68,41 @@ Gets human-readable description for an error code by calling L<uv_strerror_r|htt
 
 =over 2
 
-=item * L<Go::UV::Loop|SPVM::Go::UV::Loop>
+=item * L<UV::Loop|SPVM::UV::Loop>
 
-=item * L<Go::UV::Constant|SPVM::Go::UV::Constant>
+=item * L<UV::Constant|SPVM::UV::Constant>
 
-=item * L<Go::UV::Handle|SPVM::Go::UV::Handle>
+=item * L<UV::Handle|SPVM::UV::Handle>
 
-=item * L<Go::UV::Handle::Idle|SPVM::Go::UV::Handle::Idle>
+=item * L<UV::Handle::Idle|SPVM::UV::Handle::Idle>
 
-=item * L<Go::UV::Handle::Pipe|SPVM::Go::UV::Handle::Pipe>
+=item * L<UV::Handle::Pipe|SPVM::UV::Handle::Pipe>
 
-=item * L<Go::UV::Handle::Async|SPVM::Go::UV::Handle::Async>
+=item * L<UV::Handle::Async|SPVM::UV::Handle::Async>
 
-=item * L<Go::UV::Handle::Stream|SPVM::Go::UV::Handle::Stream>
+=item * L<UV::Handle::Stream|SPVM::UV::Handle::Stream>
 
-=item * L<Go::UV::Handle::Timer|SPVM::Go::UV::Handle::Timer>
+=item * L<UV::Handle::Timer|SPVM::UV::Handle::Timer>
 
-=item * L<Go::UV::Handle::Poll|SPVM::Go::UV::Handle::Poll>
+=item * L<UV::Handle::Poll|SPVM::UV::Handle::Poll>
 
-=item * L<Go::UV::Request|SPVM::Go::UV::Request>
+=item * L<UV::Request|SPVM::UV::Request>
 
-=item * L<Go::UV::Request::Write|SPVM::Go::UV::Request::Write>
+=item * L<UV::Request::Write|SPVM::UV::Request::Write>
 
-=item * L<Go::UV::Callback::Write|SPVM::Go::UV::Callback::Write>
+=item * L<UV::Callback::Write|SPVM::UV::Callback::Write>
 
-=item * L<Go::UV::Callback::Idle|SPVM::Go::UV::Callback::Idle>
+=item * L<UV::Callback::Idle|SPVM::UV::Callback::Idle>
 
-=item * L<Go::UV::Callback::Async|SPVM::Go::UV::Callback::Async>
+=item * L<UV::Callback::Async|SPVM::UV::Callback::Async>
 
-=item * L<Go::UV::Callback::Read|SPVM::Go::UV::Callback::Read>
+=item * L<UV::Callback::Read|SPVM::UV::Callback::Read>
 
-=item * L<Go::UV::Callback::Close|SPVM::Go::UV::Callback::Close>
+=item * L<UV::Callback::Close|SPVM::UV::Callback::Close>
 
-=item * L<Go::UV::Callback::Timer|SPVM::Go::UV::Callback::Timer>
+=item * L<UV::Callback::Timer|SPVM::UV::Callback::Timer>
 
-=item * L<Go::UV::Callback::Poll|SPVM::Go::UV::Callback::Poll>
+=item * L<UV::Callback::Poll|SPVM::UV::Callback::Poll>
 
 =back
 

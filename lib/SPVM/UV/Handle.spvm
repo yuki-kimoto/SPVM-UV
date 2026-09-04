@@ -1,23 +1,23 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class Go::UV::Handle : pointer {
+class UV::Handle : pointer {
   
-  allow Go::UV::Loop;
+  allow UV::Loop;
   
-  use Go::UV::Callback::Close;
-  use Go::UV::Loop;
+  use UV::Callback::Close;
+  use UV::Loop;
   
   use Resource::UV;
   use Go::Resource::UV;
   
   # Fields
-  has close_cb : rw Go::UV::Callback::Close;
+  has close_cb : rw UV::Callback::Close;
   
-  has loop : ro Go::UV::Loop;
+  has loop : ro UV::Loop;
   
   # Instance Methods
-  native method close_safe : void ($close_cb : Go::UV::Callback::Close = undef);
+  native method close_safe : void ($close_cb : UV::Callback::Close = undef);
   
   native method get_type : int ();
   

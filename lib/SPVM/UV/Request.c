@@ -5,9 +5,9 @@
 #include "uv.h"
 #include "spvm_go_uv.h"
 
-static const char* FILE_NAME = "Go/UV/Request.c";
+static const char* FILE_NAME = "UV/Request.c";
 
-int32_t SPVM__Go__UV__Request__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Request__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -20,7 +20,7 @@ int32_t SPVM__Go__UV__Request__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   if (!no_free) {
     uv_write_t* uv_req_write = env->get_pointer(env, stack, obj_uv_req_write);
     
-    SPVM__Go__UV__Request__REQ_DATA* uv_req_data = (SPVM__Go__UV__Request__REQ_DATA*)uv_req_write->data;
+    SPVM__UV__Request__REQ_DATA* uv_req_data = (SPVM__UV__Request__REQ_DATA*)uv_req_write->data;
     
     env->free_memory_block(env, stack, uv_req_data);
     uv_req_write->data = NULL;

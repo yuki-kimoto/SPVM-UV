@@ -5,18 +5,18 @@
 #include "uv.h"
 #include "spvm_go_uv.h"
 
-static const char* FILE_NAME = "Go/UV/Loop.c";
+static const char* FILE_NAME = "UV/Loop.c";
 
-int32_t SPVM__Go__UV__Loop__default_loop(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__default_loop(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
-  SPVM_OBJ* obj_uv_loop = env->get_class_var_object_by_name(env, stack, "Go::UV::Loop", "$DEFAULT_LOOP", &error_id, __func__, FILE_NAME, __LINE__);
+  SPVM_OBJ* obj_uv_loop = env->get_class_var_object_by_name(env, stack, "UV::Loop", "$DEFAULT_LOOP", &error_id, __func__, FILE_NAME, __LINE__);
   
   if (!obj_uv_loop) {
     uv_loop_t* uv_loop = uv_default_loop();
     
-    obj_uv_loop = env->new_pointer_object_by_name(env, stack, "Go::UV::Loop", uv_loop, &error_id, __func__, FILE_NAME, __LINE__);
+    obj_uv_loop = env->new_pointer_object_by_name(env, stack, "UV::Loop", uv_loop, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) return error_id;
     
     env->set_no_free(env, stack, obj_uv_loop, 1);
@@ -25,7 +25,7 @@ int32_t SPVM__Go__UV__Loop__default_loop(SPVM_ENV* env, SPVM_VALUE* stack) {
     env->call_instance_method_by_name(env, stack, "init", 1, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) return error_id;
     
-    env->set_class_var_object_by_name(env, stack, "Go::UV::Loop", "$DEFAULT_LOOP", obj_uv_loop, &error_id, __func__, FILE_NAME, __LINE__);
+    env->set_class_var_object_by_name(env, stack, "UV::Loop", "$DEFAULT_LOOP", obj_uv_loop, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) return error_id;
   }
   
@@ -34,7 +34,7 @@ int32_t SPVM__Go__UV__Loop__default_loop(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Loop__new(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__new(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -46,7 +46,7 @@ int32_t SPVM__Go__UV__Loop__new(SPVM_ENV* env, SPVM_VALUE* stack) {
     return env->die(env, stack, "uv_loop_init failed. status=%d.", __func__, FILE_NAME, __LINE__, status);
   }
   
-  SPVM_OBJ* obj_uv_loop = env->new_pointer_object_by_name(env, stack, "Go::UV::Loop", uv_loop, &error_id, __func__, FILE_NAME, __LINE__);
+  SPVM_OBJ* obj_uv_loop = env->new_pointer_object_by_name(env, stack, "UV::Loop", uv_loop, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) return error_id;
   
   stack[0].oval = obj_uv_loop;
@@ -58,11 +58,11 @@ int32_t SPVM__Go__UV__Loop__new(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-static void SPVM__Go__UV__Loop__async_cb(uv_async_t* uv_handle) {
+static void SPVM__UV__Loop__async_cb(uv_async_t* uv_handle) {
   
   int32_t error_id = 0;
   
-  SPVM__Go__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__Go__UV__Handle__HANDLE_DATA*)uv_handle->data;
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__UV__Handle__HANDLE_DATA*)uv_handle->data;
   
   SPVM_ENV* env = uv_handle_data->env;
   SPVM_VALUE* stack = uv_handle_data->stack;
@@ -77,13 +77,13 @@ static void SPVM__Go__UV__Loop__async_cb(uv_async_t* uv_handle) {
   stack[1].oval = obj_uv_handle;
   env->call_instance_method_by_name(env, stack, "", 2, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) {
-    spvm_diag("[An exception is converted to a warning in SPVM__Go__UV__Loop__async_cb]\n%s", env->get_exception_chars(env, stack));
+    spvm_diag("[An exception is converted to a warning in SPVM__UV__Loop__async_cb]\n%s", env->get_exception_chars(env, stack));
     return;
   }
   
 }
 
-int32_t SPVM__Go__UV__Loop__run(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   SPVM_OBJ* obj_uv_loop = stack[0].oval;
   int32_t uv_run_mode = stack[1].ival;
@@ -98,7 +98,7 @@ int32_t SPVM__Go__UV__Loop__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Loop__idle_init(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__idle_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -126,7 +126,7 @@ int32_t SPVM__Go__UV__Loop__idle_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Loop__async_init(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__async_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -148,7 +148,7 @@ int32_t SPVM__Go__UV__Loop__async_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   env->set_field_object_by_name(env, stack, obj_uv_async, "async_cb", obj_cb, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) return error_id;
   
-  int32_t status = uv_async_init(uv_loop, uv_async, SPVM__Go__UV__Loop__async_cb);
+  int32_t status = uv_async_init(uv_loop, uv_async, SPVM__UV__Loop__async_cb);
   
   if (!(status == 0)) {
     return env->die(env, stack, "uv_async_init failed. status=%d.", __func__, FILE_NAME, __LINE__, status);
@@ -162,7 +162,7 @@ int32_t SPVM__Go__UV__Loop__async_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Loop__timer_init(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__timer_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -190,7 +190,7 @@ int32_t SPVM__Go__UV__Loop__timer_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Loop__poll_init(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__poll_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -219,7 +219,7 @@ int32_t SPVM__Go__UV__Loop__poll_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Loop__pipe_init(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__pipe_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -248,7 +248,7 @@ int32_t SPVM__Go__UV__Loop__pipe_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Go__UV__Loop__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__Loop__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   

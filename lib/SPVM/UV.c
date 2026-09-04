@@ -6,9 +6,9 @@
 #include "spvm_native.h"
 #include "uv.h"
 
-static const char* FILE_NAME = "Go/UV.c";
+static const char* FILE_NAME = "UV.c";
 
-int32_t SPVM__Go__UV__strerror(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__UV__strerror(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   

@@ -1,16 +1,16 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class Go::UV::Handle::Async extends Go::UV::Handle {
+class UV::Handle::Async extends UV::Handle {
   
   use Resource::UV;
   use Go::Resource::UV;
   
   # Fields
-  has async_cb : rw Go::UV::Callback::Async;
+  has async_cb : rw UV::Callback::Async;
   
   # Class Mehtods
-  native static method new : Go::UV::Handle::Async ();
+  native static method new : UV::Handle::Async ();
   
   # Instance Methods
   native method send : void ();

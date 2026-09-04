@@ -1,23 +1,23 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class Go::UV::Request::Write extends Go::UV::Request {
+class UV::Request::Write extends UV::Request {
   
-  use Go::UV::Request::Write;
-  use Go::UV::Callback::Write;
+  use UV::Request::Write;
+  use UV::Callback::Write;
   
   use Resource::UV;
   use Go::Resource::UV;
   
   # Fields
-  has write_cb : rw Go::UV::Callback::Write;
+  has write_cb : rw UV::Callback::Write;
   
   has write_buffer : rw string;
   
   # Class Mehtods
-  native static method new : Go::UV::Request::Write ();
+  native static method new : UV::Request::Write ();
   
   # Instance Methods
-  native method write : void ($uv_stream : Go::UV::Handle::Stream, $buffer : string, $buffer_length : int, $cb : Go::UV::Callback::Write, $buffer_offset : int = 0);
+  native method write : void ($uv_stream : UV::Handle::Stream, $buffer : string, $buffer_length : int, $cb : UV::Callback::Write, $buffer_offset : int = 0);
   
 }

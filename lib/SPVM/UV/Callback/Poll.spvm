@@ -1,10 +1,10 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class Go::UV::Callback::Poll : interface_t {
+class UV::Callback::Poll : interface_t {
   
-  use Go::UV::Handle::Poll;
+  use UV::Handle::Poll;
   
-  required method : void ($uv_poll : Go::UV::Handle::Poll, $status : int, $events : int);
+  required method : void ($uv_poll : UV::Handle::Poll, $status : int, $events : int);
   
 }

@@ -1,19 +1,19 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class Go::UV::Handle::Idle extends Go::UV::Handle {
+class UV::Handle::Idle extends UV::Handle {
   
-  use Go::UV::Callback::Idle;
+  use UV::Callback::Idle;
   use Resource::UV;
   use Go::Resource::UV;
   
   # Fields
-  has idle_cb : rw Go::UV::Callback::Idle;
+  has idle_cb : rw UV::Callback::Idle;
   
   # Class Mehtods
-  native static method new : Go::UV::Handle::Idle ();
+  native static method new : UV::Handle::Idle ();
   
   # Instance Methods
-  native method start : void ($cb : Go::UV::Callback::Idle);
+  native method start : void ($cb : UV::Callback::Idle);
   
 }
