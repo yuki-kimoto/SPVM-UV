@@ -3,7 +3,7 @@
 
 #include "spvm_native.h"
 #include "uv.h"
-#include "spvm_go_uv.h"
+#include "spvm_uv.h"
 
 static const char* FILE_NAME = "UV/Request.c";
 
