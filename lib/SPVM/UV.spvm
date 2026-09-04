@@ -1,10 +1,13 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class UV {
-  version "0.001";
+class Go::UV {
+  version_from Go;
   
-  static method my_method : void () {
-    
-  }
+  use Resource::UV;
+  use Go::Resource::UV;
+  
+  # Class Methods
+  native static method strerror : string ($status : int);
+  
 }
