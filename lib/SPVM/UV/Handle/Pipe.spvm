@@ -4,7 +4,7 @@
 class UV::Handle::Pipe extends UV::Handle::Stream {
   
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Class Mehtods
   native static method new : UV::Handle::Pipe ();

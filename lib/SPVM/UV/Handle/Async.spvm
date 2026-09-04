@@ -4,7 +4,7 @@
 class UV::Handle::Async extends UV::Handle {
   
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Fields
   has async_cb : rw UV::Callback::Async;

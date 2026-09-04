@@ -4,7 +4,7 @@
 class UV::Request {
   
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Instance Methods
   native method DESTROY : void ();

@@ -21,7 +21,7 @@ class UV::Loop : pointer {
   use UV::Callback::Close;
   
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Class Variables
   our $DEFAULT_LOOP : UV::Loop;

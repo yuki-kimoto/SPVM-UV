@@ -1,7 +1,7 @@
 class UV::Constant {
   
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   native static method UV_VERSION_MAJOR : int ();
 

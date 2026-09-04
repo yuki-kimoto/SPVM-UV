@@ -9,7 +9,7 @@ class UV::Handle : pointer {
   use UV::Loop;
   
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Fields
   has close_cb : rw UV::Callback::Close;

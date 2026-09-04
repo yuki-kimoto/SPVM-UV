@@ -2,10 +2,8 @@
 # MIT License
 
 class UV {
-  version_from Go;
-  
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Class Methods
   native static method strerror : string ($status : int);

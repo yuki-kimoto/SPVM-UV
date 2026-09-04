@@ -5,7 +5,7 @@ class UV::Handle::Timer extends UV::Handle {
   
   use UV::Callback::Timer;
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   
   # Fields

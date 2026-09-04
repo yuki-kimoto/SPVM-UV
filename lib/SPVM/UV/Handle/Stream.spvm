@@ -7,7 +7,7 @@ class UV::Handle::Stream extends UV::Handle {
   use UV::Request::Write;
   use UV::Callback::Read;
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Fields
   has read_cb : rw UV::Callback::Read;

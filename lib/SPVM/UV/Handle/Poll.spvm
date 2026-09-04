@@ -5,7 +5,7 @@ class UV::Handle::Poll extends UV::Handle {
   
   use UV::Callback::Poll;
   use Resource::UV;
-  use Go::Resource::UV;
+  use UV::Resource::UV;
   
   # Fields
   has poll_cb : rw UV::Callback::Poll;
