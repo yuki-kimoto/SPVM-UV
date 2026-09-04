@@ -2,6 +2,9 @@
 # MIT License
 
 class UV {
+  
+  version "0.001";
+  
   use Resource::UV;
   use UV::Resource::UV;
   
