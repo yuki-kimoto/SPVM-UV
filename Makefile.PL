@@ -119,6 +119,9 @@ WriteMakefile(
     %configure_requires_and_prereq_pm,
     'SPVM::Resource::UV' => '0.001',
   },
+  TEST_REQUIRES => {
+    'SPVM::Sys' => '0.580',
+  }
 );
 
 package MY {
