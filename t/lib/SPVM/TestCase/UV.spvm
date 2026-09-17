@@ -187,19 +187,19 @@ class TestCase::UV {
       Sys::IO->close($fd2);
     });
     
-    my $client_pipe = UV::Handle::Pipe->new;
-    $loop->pipe_init($client_pipe, 0);
-    $client_pipe->open(Sys::IO->dup($fd1));
+    my $fd1_pipe = UV::Handle::Pipe->new;
+    $loop->pipe_init($fd1_pipe, 0);
+    $fd1_pipe->open(Sys::IO->dup($fd1));
     
-    my $accepted_pipe = UV::Handle::Pipe->new;
-    $loop->pipe_init($accepted_pipe, 0);
-    $accepted_pipe->open(Sys::IO->dup($fd2));
+    my $fd2_pipe = UV::Handle::Pipe->new;
+    $loop->pipe_init($fd2_pipe, 0);
+    $fd2_pipe->open(Sys::IO->dup($fd2));
     
     my $read_data = new_string_len 5;
     my $read_length_ref = [-1];
     my $status_ref = [-1];
     
-    my $read_cb = [$client_pipe : UV::Handle::Pipe, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+    my $read_cb = [$fd1_pipe : UV::Handle::Pipe, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
       if ($nread > 0) {
         my $copy_len = $nread > 5 ? 5 : (int)$nread;
         for (my $i = 0; $i < $copy_len; $i++) {
@@ -211,16 +211,16 @@ class TestCase::UV {
         $status_ref->[0] = (int)$nread;
       }
       $stream->close_safe;
-      $client_pipe->close_safe;
+      $fd1_pipe->close_safe;
     };
-    weaken $read_cb->{client_pipe};
+    weaken $read_cb->{fd1_pipe};
     
-    $client_pipe->read_start($read_data, 5, $read_cb);
+    $fd1_pipe->read_start($read_data, 5, $read_cb);
     
     my $write_req = UV::Request::Write->new;
-    $write_req->write($accepted_pipe, "hello", 5, [$accepted_pipe : UV::Handle::Pipe] method : void ($req : UV::Request::Write, $status : int) {
+    $write_req->write($fd2_pipe, "hello", 5, [$fd2_pipe : UV::Handle::Pipe] method : void ($req : UV::Request::Write, $status : int) {
       $req->set_write_cb(undef);
-      $accepted_pipe->close_safe;
+      $fd2_pipe->close_safe;
     });
     
     $loop->run(UV_C->UV_RUN_DEFAULT);
