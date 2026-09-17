@@ -16,43 +16,88 @@ class TestCase::UV {
   
   static method poll : int () {
     
-    my $loop = UV::Loop->new;
-    
-    my $fd1 = -1;
-    my $fd2 = -1;
-    &inet_socketpair(\$fd1, \$fd2, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
-    
-    Fn->defer([$fd1 : int, $fd2 : int] method : void () {
-      Sys::IO->close($fd1);
-      Sys::IO->close($fd2);
-    });
-    
-    &set_blocking($fd1, 0);
-    &set_blocking($fd2, 0);
-    
-    my $poll = UV::Handle::Poll->new;
-    $loop->poll_init($poll, $fd1);
-    
-    my $read_data = new_string_len 5;
-    my $read_length_ref = [-1];
-    my $status_ref = [-1];
-    
-    $poll->start([$fd1 : int, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($poll_handle : UV::Handle::Poll, $status : int, $events : int) {
-      $status_ref->[0] = $status;
-      $read_length_ref->[0] = Sys::Socket->recv($fd1, $read_data, 5, 0);
-      $poll_handle->close_safe;
-    }, UV_C->UV_READABLE | UV_C->UV_WRITABLE);
-    
-    Sys::Socket->send($fd2, "hello", 5, 0);
-    
-    $loop->run(UV_C->UV_RUN_DEFAULT);
-    
-    unless ($status_ref->[0] == 0) {
-      return 0;
+    # $fd2 -> $fd1
+    {
+      my $loop = UV::Loop->new;
+      
+      my $fd1 = -1;
+      my $fd2 = -1;
+      &inet_socketpair(\$fd1, \$fd2, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
+      
+      Fn->defer([$fd1 : int, $fd2 : int] method : void () {
+        Sys::IO->close($fd1);
+        Sys::IO->close($fd2);
+      });
+      
+      &set_blocking($fd1, 0);
+      &set_blocking($fd2, 0);
+      
+      my $poll = UV::Handle::Poll->new;
+      $loop->poll_init($poll, $fd1);
+      
+      my $read_data = new_string_len 5;
+      my $read_length_ref = [-1];
+      my $status_ref = [-1];
+      
+      $poll->start([$fd1 : int, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($poll_handle : UV::Handle::Poll, $status : int, $events : int) {
+        $status_ref->[0] = $status;
+        $read_length_ref->[0] = Sys::Socket->recv($fd1, $read_data, 5, 0);
+        $poll_handle->close_safe;
+      }, UV_C->UV_READABLE | UV_C->UV_WRITABLE);
+      
+      Sys::Socket->send($fd2, "hello", 5, 0);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($status_ref->[0] == 0) {
+        return 0;
+      }
+      
+      unless ($read_length_ref->[0] == 5 && $read_data eq "hello") {
+        return 0;
+      }
     }
     
-    unless ($read_length_ref->[0] == 5 && $read_data eq "hello") {
-      return 0;
+    # $fd1 -> $fd2
+    {
+      my $loop = UV::Loop->new;
+      
+      my $fd1 = -1;
+      my $fd2 = -1;
+      &inet_socketpair(\$fd1, \$fd2, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
+      
+      Fn->defer([$fd1 : int, $fd2 : int] method : void () {
+        Sys::IO->close($fd1);
+        Sys::IO->close($fd2);
+      });
+      
+      &set_blocking($fd1, 0);
+      &set_blocking($fd2, 0);
+      
+      my $poll = UV::Handle::Poll->new;
+      $loop->poll_init($poll, $fd1);
+      
+      my $read_data = new_string_len 5;
+      my $read_length_ref = [-1];
+      my $status_ref = [-1];
+      
+      $poll->start([$fd2 : int, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($poll_handle : UV::Handle::Poll, $status : int, $events : int) {
+        $status_ref->[0] = $status;
+        $read_length_ref->[0] = Sys::Socket->recv($fd2, $read_data, 5, 0);
+        $poll_handle->close_safe;
+      }, UV_C->UV_READABLE | UV_C->UV_WRITABLE);
+      
+      Sys::Socket->send($fd1, "hello", 5, 0);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($status_ref->[0] == 0) {
+        return 0;
+      }
+      
+      unless ($read_length_ref->[0] == 5 && $read_data eq "hello") {
+        return 0;
+      }
     }
     
     return 1;
