@@ -16,6 +16,7 @@ my $start_memory_blocks_count = $api->get_memory_blocks_count;
 
 ok(SPVM::TestCase::UV->test);
 ok(SPVM::TestCase::UV->poll);
+ok(SPVM::TestCase::UV->timer);
 
 
 # Version check
