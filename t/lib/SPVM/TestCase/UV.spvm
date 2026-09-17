@@ -117,10 +117,6 @@ class TestCase::UV {
       $async_handle->close_safe;
     });
     
-    Fn->defer([$async : UV::Handle::Async] method : void () {
-      $async->close_safe;
-    });
-    
     $async->send;
     
     $loop->run(UV_C->UV_RUN_DEFAULT);
