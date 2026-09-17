@@ -5,6 +5,8 @@ class TestCase::UV {
   use Sys::Socket::Constant as SOCKET_C;
   use Sys::IO;
   use Sys::Socket::Util;
+  use Sys::Ioctl::Constant as IOCTL_C;
+  use Sys::IO::Constant as IO_C;
   
   static method test : int () {
     
@@ -26,18 +28,43 @@ class TestCase::UV {
     my $tmp_socket_address = Sys::Socket::Util->sockaddr_in($tmp_port, $address);
     Sys->bind($server_fd, $tmp_socket_address);
     Sys->listen($server_fd, SOCKET_C->SOMAXCONN);
+    &set_blocking($server_fd, 0);
     
     my $socket_address = (Sys::Socket::Sockaddr::In)Sys->getsockname($server_fd);
     
     Sys->connect($client_fd, $socket_address);
+    &set_blocking($client_fd, 0);
     
     my $accepted_fd = -1;
     Sys->accept(\$accepted_fd, $server_fd);
+    &set_blocking($accepted_fd, 0);
     
     Sys::IO->close($client_fd);
     Sys::IO->close($server_fd);
     
     return 1;
   }
+  
+  static method set_blocking : void ($fd : int, $blocking : int) {
+    
+    if (Sys::OS->is_windows) {
+      my $flags = [(int)!$blocking];
+      Sys->ioctl($fd, IOCTL_C->FIONBIO, $flags);
+    }
+    else {
+      my $newmode = Sys->fcntl($fd, IO_C->F_GETFL);
+      
+      if ($blocking == 0) {
+        $newmode &= ~IO_C->O_NDELAY;
+        $newmode |= IO_C->O_NONBLOCK;
+      }
+      else {
+        $newmode &= ~(IO_C->O_NDELAY|IO_C->O_NONBLOCK);
+      }
+      
+      Sys->fcntl($fd, IO_C->F_SETFL, $newmode);
+    }
+  }
+  
 
 }
