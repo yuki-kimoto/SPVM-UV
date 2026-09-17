@@ -65,10 +65,6 @@ class TestCase::UV {
     my $timer = UV::Handle::Timer->new;
     $loop->timer_init($timer);
     
-    Fn->defer([$timer : UV::Handle::Timer] method : void () {
-      $timer->close_safe;
-    });
-    
     my $called_count_ref = [0];
     
     $timer->start([$called_count_ref : int[]] method : void ($timer_handle : UV::Handle::Timer) {
@@ -92,16 +88,40 @@ class TestCase::UV {
     my $idle = UV::Handle::Idle->new;
     $loop->idle_init($idle);
     
-    Fn->defer([$idle : UV::Handle::Idle] method : void () {
-      $idle->close_safe;
-    });
-    
     my $called_count_ref = [0];
     
     $idle->start([$called_count_ref : int[]] method : void ($idle_handle : UV::Handle::Idle) {
       $called_count_ref->[0]++;
       $idle_handle->close_safe;
     });
+    
+    $loop->run(UV_C->UV_RUN_DEFAULT);
+    
+    unless ($called_count_ref->[0] == 1) {
+      return 0;
+    }
+    
+    return 1;
+  }
+  
+  static method async : int () {
+    
+    my $loop = UV::Loop->new;
+    
+    my $async = UV::Handle::Async->new;
+    
+    my $called_count_ref = [0];
+    
+    $loop->async_init($async, [$called_count_ref : int[]] method : void ($async_handle : UV::Handle::Async) {
+      $called_count_ref->[0]++;
+      $async_handle->close_safe;
+    });
+    
+    Fn->defer([$async : UV::Handle::Async] method : void () {
+      $async->close_safe;
+    });
+    
+    $async->send;
     
     $loop->run(UV_C->UV_RUN_DEFAULT);
     
