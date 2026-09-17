@@ -39,11 +39,11 @@ class TestCase::UV {
     
     $poll->start([$client_fd : int, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($poll_handle : UV::Handle::Poll, $status : int, $events : int) {
       $status_ref->[0] = $status;
-      $read_length_ref->[0] = Sys->sysread($client_fd, $read_data, 5);
+      $read_length_ref->[0] = Sys::Socket->recv($client_fd, $read_data, 5, 0);
       $poll_handle->close_safe;
     }, UV_C->UV_READABLE | UV_C->UV_WRITABLE);
     
-    Sys->syswrite($accepted_fd, "hello", 5);
+    Sys::Socket->send($accepted_fd, "hello", 5, 0);
     
     $loop->run(UV_C->UV_RUN_DEFAULT);
     
