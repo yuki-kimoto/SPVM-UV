@@ -19,6 +19,7 @@ ok(SPVM::TestCase::UV->poll);
 ok(SPVM::TestCase::UV->timer);
 ok(SPVM::TestCase::UV->idle);
 ok(SPVM::TestCase::UV->async);
+ok(SPVM::TestCase::UV->pipe);
 
 
 # Version check

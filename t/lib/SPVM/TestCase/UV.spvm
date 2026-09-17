@@ -128,6 +128,65 @@ class TestCase::UV {
     return 1;
   }
   
+  static method pipe : int () {
+    
+    my $loop = UV::Loop->new;
+    
+    my $client_fd = -1;
+    my $accepted_fd = -1;
+    my $non_blocking = 1;
+    Sys->pipepair(\$client_fd, \$accepted_fd, $non_blocking);
+    
+    Fn->defer([$client_fd : int, $accepted_fd : int] method : void () {
+      Sys::IO->close($client_fd);
+      Sys::IO->close($accepted_fd);
+    });
+    
+    my $client_pipe = UV::Handle::Pipe->new;
+    $loop->pipe_init($client_pipe, 0);
+    $client_pipe->open(Sys::IO->dup($client_fd));
+    
+    my $accepted_pipe = UV::Handle::Pipe->new;
+    $loop->pipe_init($accepted_pipe, 0);
+    $accepted_pipe->open(Sys::IO->dup($accepted_fd));
+    
+    my $read_data = new_string_len 5;
+    my $read_length_ref = [-1];
+    my $status_ref = [-1];
+    
+    my $read_cb = [$client_pipe : UV::Handle::Pipe, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      if ($nread > 0) {
+        my $copy_len = $nread > 5 ? 5 : (int)$nread;
+        for (my $i = 0; $i < $copy_len; $i++) {
+          $read_data->[$i] = $buf->[$i];
+        }
+        $read_length_ref->[0] = (int)$nread;
+      }
+      else {
+        $status_ref->[0] = (int)$nread;
+      }
+      $stream->close_safe;
+      $client_pipe->close_safe;
+    };
+    weaken $read_cb->{client_pipe};
+    
+    $client_pipe->read_start($read_data, 5, $read_cb);
+    
+    my $write_req = UV::Request::Write->new;
+    $write_req->write($accepted_pipe, "hello", 5, [$accepted_pipe : UV::Handle::Pipe] method : void ($req : UV::Request::Write, $status : int) {
+      $req->set_write_cb(undef);
+      $accepted_pipe->close_safe;
+    });
+    
+    $loop->run(UV_C->UV_RUN_DEFAULT);
+    
+    unless ($read_length_ref->[0] == 5 && $read_data eq "hello") {
+      return 0;
+    }
+    
+    return 1;
+  }
+  
   static method set_blocking : void ($fd : int, $blocking : int) {
     
     if (Sys::OS->is_windows) {
