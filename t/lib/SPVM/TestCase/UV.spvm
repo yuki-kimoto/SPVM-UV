@@ -58,6 +58,33 @@ class TestCase::UV {
     return 1;
   }
   
+  static method timer : int () {
+    
+    my $loop = UV::Loop->new;
+    
+    my $timer = UV::Handle::Timer->new;
+    $loop->timer_init($timer);
+    
+    Fn->defer([$timer : UV::Handle::Timer] method : void () {
+      $timer->close_safe;
+    });
+    
+    my $called_count_ref = [0];
+    
+    $timer->start([$called_count_ref : int[]] method : void ($timer_handle : UV::Handle::Timer) {
+      $called_count_ref->[0]++;
+      $timer_handle->close_safe;
+    }, 10, 0);
+    
+    $loop->run(UV_C->UV_RUN_DEFAULT);
+    
+    unless ($called_count_ref->[0] == 1) {
+      return 0;
+    }
+    
+    return 1;
+  }
+  
   static method set_blocking : void ($fd : int, $blocking : int) {
     
     if (Sys::OS->is_windows) {
