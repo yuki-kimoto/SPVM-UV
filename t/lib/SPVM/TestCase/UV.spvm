@@ -85,6 +85,33 @@ class TestCase::UV {
     return 1;
   }
   
+  static method idle : int () {
+    
+    my $loop = UV::Loop->new;
+    
+    my $idle = UV::Handle::Idle->new;
+    $loop->idle_init($idle);
+    
+    Fn->defer([$idle : UV::Handle::Idle] method : void () {
+      $idle->close_safe;
+    });
+    
+    my $called_count_ref = [0];
+    
+    $idle->start([$called_count_ref : int[]] method : void ($idle_handle : UV::Handle::Idle) {
+      $called_count_ref->[0]++;
+      $idle_handle->close_safe;
+    });
+    
+    $loop->run(UV_C->UV_RUN_DEFAULT);
+    
+    unless ($called_count_ref->[0] == 1) {
+      return 0;
+    }
+    
+    return 1;
+  }
+  
   static method set_blocking : void ($fd : int, $blocking : int) {
     
     if (Sys::OS->is_windows) {
