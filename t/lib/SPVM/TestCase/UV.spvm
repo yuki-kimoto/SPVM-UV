@@ -1,8 +1,41 @@
 class TestCase::UV {
   use UV;
   use UV::Loop;
+  use Sys;
+  use Sys::Socket::Constant as SOCKET_C;
+  use Sys::IO;
+  use Sys::Socket::Util;
+  
   static method test : int () {
     
     return 1;
   }
+  
+  static method poll : int () {
+    
+    my $loop = UV::Loop->new;
+    
+    my $client_fd = -1;
+    Sys->socket(\$client_fd, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
+    
+    my $server_fd = -1;
+    Sys->socket(\$server_fd, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
+    
+    my $address = Sys::Socket::Util->inet_aton("127.0.0.1");
+    my $tmp_port = 0;
+    my $tmp_socket_address = Sys::Socket::Util->sockaddr_in($tmp_port, $address);
+    Sys->bind($server_fd, $tmp_socket_address);
+    
+    my $socket_address = (Sys::Socket::Sockaddr::In)Sys->getsockname($server_fd);
+    
+    my $port = $socket_address->sin_port;
+    
+    
+    
+    Sys::IO->close($client_fd);
+    Sys::IO->close($server_fd);
+    
+    return 1;
+  }
+
 }
