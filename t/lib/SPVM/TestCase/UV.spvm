@@ -7,6 +7,7 @@ class TestCase::UV {
   use Sys::Socket::Util;
   use Sys::Ioctl::Constant as IOCTL_C;
   use Sys::IO::Constant as IO_C;
+  use UV::Constant as UV_C;
   
   static method test : int () {
     
@@ -20,11 +21,33 @@ class TestCase::UV {
     my $client_fd = -1;
     my $accepted_fd = -1;
     &inet_socketpair(\$client_fd, \$accepted_fd, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
+    
+    Fn->defer([$client_fd : int, $accepted_fd : int] method : void () {
+      Sys::IO->close($client_fd);
+      Sys::IO->close($accepted_fd);
+    });
+    
     &set_blocking($client_fd, 0);
     &set_blocking($accepted_fd, 0);
     
-    Sys::IO->close($client_fd);
-    Sys::IO->close($accepted_fd);
+    my $poll = UV::Handle::Poll->new;
+    $loop->poll_init($poll, $client_fd);
+    
+    my $read_data = new_string_len 5;
+    my $read_length_ref = [-1];
+    
+    $poll->start([$client_fd : int, $read_data : mutable string, $read_length_ref : int[]] method : void ($poll_handle : UV::Handle::Poll, $status : int, $events : int) {
+      $read_length_ref->[0] = Sys->sysread($client_fd, $read_data, 5);
+      $poll_handle->close_safe();
+    }, UV_C->UV_READABLE | UV_C->UV_WRITABLE);
+    
+    Sys->syswrite($accepted_fd, "hello", 5);
+    
+    $loop->run(UV_C->UV_RUN_DEFAULT);
+    
+    unless ($read_length_ref->[0] == 5 && $read_data eq "hello") {
+      return 0;
+    }
     
     return 1;
   }
