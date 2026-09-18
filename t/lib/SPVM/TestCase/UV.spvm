@@ -22,15 +22,15 @@ class TestCase::UV {
       
       my $fd1 = -1;
       my $fd2 = -1;
-      &inet_socketpair(\$fd1, \$fd2, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
+      Sys::Socket::Util->inet_socketpair(\$fd1, \$fd2, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
       
       Fn->defer([$fd1 : int, $fd2 : int] method : void () {
         Sys::IO->close($fd1);
         Sys::IO->close($fd2);
       });
       
-      &set_blocking($fd1, 0);
-      &set_blocking($fd2, 0);
+      Sys::Socket::Util->set_blocking($fd1, 0);
+      Sys::Socket::Util->set_blocking($fd2, 0);
       
       my $poll = UV::Handle::Poll->new;
       $loop->poll_init($poll, $fd1);
@@ -64,15 +64,15 @@ class TestCase::UV {
       
       my $fd1 = -1;
       my $fd2 = -1;
-      &inet_socketpair(\$fd1, \$fd2, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
+      Sys::Socket::Util->inet_socketpair(\$fd1, \$fd2, SOCKET_C->AF_INET, SOCKET_C->SOCK_STREAM, 0);
       
       Fn->defer([$fd1 : int, $fd2 : int] method : void () {
         Sys::IO->close($fd1);
         Sys::IO->close($fd2);
       });
       
-      &set_blocking($fd1, 0);
-      &set_blocking($fd2, 0);
+      Sys::Socket::Util->set_blocking($fd1, 0);
+      Sys::Socket::Util->set_blocking($fd2, 0);
       
       my $poll = UV::Handle::Poll->new;
       $loop->poll_init($poll, $fd1);
@@ -292,53 +292,4 @@ class TestCase::UV {
     return 1;
   }
   
-  static method set_blocking : void ($fd : int, $blocking : int) {
-    
-    if (Sys::OS->is_windows) {
-      my $flags = [(int)!$blocking];
-      Sys->ioctl($fd, IOCTL_C->FIONBIO, $flags);
-    }
-    else {
-      my $newmode = Sys->fcntl($fd, IO_C->F_GETFL);
-      
-      if ($blocking == 0) {
-        $newmode &= ~IO_C->O_NDELAY;
-        $newmode |= IO_C->O_NONBLOCK;
-      }
-      else {
-        $newmode &= ~(IO_C->O_NDELAY|IO_C->O_NONBLOCK);
-      }
-      
-      Sys->fcntl($fd, IO_C->F_SETFL, $newmode);
-    }
-  }
-  
-  static method inet_socketpair : void ($socket_fd1_ref : int*, $socket_fd2_ref : int*, $domain : int, $type : int, $protocol : int) {
-    
-    my $client_fd = -1;
-    Sys->socket(\$client_fd, $domain, $type, $protocol);
-    
-    my $server_fd = -1;
-    Sys->socket(\$server_fd, $domain, $type, $protocol);
-    
-    my $address = Sys::Socket::Util->inet_aton("127.0.0.1");
-    my $tmp_port = 0;
-    my $tmp_socket_address = Sys::Socket::Util->sockaddr_in($tmp_port, $address);
-    Sys->bind($server_fd, $tmp_socket_address);
-    Sys->listen($server_fd, SOCKET_C->SOMAXCONN);
-    
-    my $socket_address = (Sys::Socket::Sockaddr::In)Sys->getsockname($server_fd);
-    
-    Sys->connect($client_fd, $socket_address);
-    
-    my $accepted_fd = -1;
-    Sys->accept(\$accepted_fd, $server_fd);
-    
-    Sys::IO->close($server_fd);
-    
-    $$socket_fd1_ref = $client_fd;
-    $$socket_fd2_ref = $accepted_fd;
-  }
-  
-
 }
