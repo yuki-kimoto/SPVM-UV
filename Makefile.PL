@@ -120,7 +120,7 @@ WriteMakefile(
     'SPVM::Resource::UV' => '0.001',
   },
   TEST_REQUIRES => {
-    'SPVM::Sys' => '0.580',
+    'SPVM::Sys' => '0.581',
   }
 );
 
