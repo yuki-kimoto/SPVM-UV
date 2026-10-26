@@ -2,9 +2,41 @@
 # MIT License
 
 class UV::ProcessOptions {
+
+  use UV;
+  use UV::StdioContainer;
+  use UV::Callback::Exit;
+
+  # Fields
+  has stdios : UV::StdioContainer[];
   
-  
-  static method my_method : void () {
-    
-  }
+  has exit_cb : UV::Callback::Exit;
+
+  # Class Methods
+  native static method new : UV::ProcessOptions ();
+
+  # Instance Methods
+  native method file : string ();
+  native method set_file : UV::ProcessOptions ($file : string);
+
+  native method args : string[] ();
+  native method set_args : UV::ProcessOptions ($args : string[]);
+
+  native method env : string[] ();
+  native method set_env : UV::ProcessOptions ($env : string[]);
+
+  native method cwd : string ();
+  native method set_cwd : UV::ProcessOptions ($cwd : string);
+
+  native method flags : int ();
+  native method set_flags : UV::ProcessOptions ($flags : int);
+
+  native method stdio : UV::StdioContainer[] ();
+  native method set_stdio : UV::ProcessOptions ($stdio : UV::StdioContainer[]);
+
+  native method exit_cb : UV::Callback::Exit ();
+  native method set_exit_cb : UV::ProcessOptions ($exit_cb : UV::Callback::Exit);
+
+  native method DESTROY : void ();
+
 }
