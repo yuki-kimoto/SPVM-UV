@@ -1,6 +1,7 @@
 package SPVM::UV::Handle::Process;
 
-
+use strict;
+use warnings;
 
 1;
 
@@ -8,58 +9,57 @@ package SPVM::UV::Handle::Process;
 
 =head1 Name
 
-SPVM::UV::Handle::Process - Short Description
+L<SPVM::UV::Handle::Process|SPVM::UV::Handle::Process> - libuv Process Handle
 
 =head1 Description
 
-UV::Handle::Process class in L<SPVM> has methods to do someting.
+C<UV::Handle::Process> class in L<SPVM> represents a process handle in L<libuv|https://libuv.org/>. See L<uv_process_t|https://docs.libuv.org/en/v1.x/process.html#c.uv_process_t>.
 
 =head1 Usage
 
   use UV::Handle::Process;
 
-=head1 Details
-
-
-
 =head1 Super Class
 
-
-
-=head1 Interfaces
-
-
-
-=head1 Enumerations
-
-
+L<UV::Handle|SPVM::UV::Handle>
 
 =head1 Fields
 
+=head2 exit_cb
 
+C<has exit_cb : L<UV::Callback::Exit|SPVM::UV::Callback::Exit>;>
+
+The exit callback associated with this process handle.
 
 =head1 Class Methods
 
+=head2 new
 
+C<static method new : L<UV::Handle::Process|SPVM::UV::Handle::Process> ();>
+
+Creates a new L<libuv process handle|https://docs.libuv.org/en/v1.x/process.html#c.uv_process_t>.
 
 =head1 Instance Methods
 
+=head2 pid
 
+C<method pid : int ();>
 
-=head1 Well Known Child Classes
+Gets the process ID (PID). See L<uv_process_t#pid|https://docs.libuv.org/en/v1.x/process.html#c.uv_process_t>.
 
+=head2 kill
 
+C<method kill : int ($signum : int);>
 
-=head1 See Also
+Sends a signal to the process. See L<uv_process_kill|https://docs.libuv.org/en/v1.x/process.html#c.uv_process_kill>.
 
+=head2 DESTROY
 
+C<method DESTROY : void ();>
 
+Destroys the process handle and releases its resources.
 
 =head1 Repository
-
-
-
-=head1 Author
 
 Yuki Kimoto C<kimoto.yuki@gmail.com>
 
@@ -68,4 +68,3 @@ Yuki Kimoto C<kimoto.yuki@gmail.com>
 Copyright (c) 2026 Yuki Kimoto
 
 MIT License
-

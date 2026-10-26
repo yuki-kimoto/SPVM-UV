@@ -22,7 +22,7 @@ C<UV::Callback::Exit> in L<SPVM> is the interface for the callback passed to L<u
 
 =head2 Anonymous method
 
-C<required method : void ($uv_process : L<UV::Process|SPVM::UV::Process>, $exit_status : long, $term_signal : int);>
+C<required method : void ($uv_process : L<UV::Handle::Process|SPVM::UV::Handle::Process>, $exit_status : long, $term_signal : int);>
 
 The callback method called when the process has exited.
 
