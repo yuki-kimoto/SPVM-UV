@@ -1,10 +1,9 @@
 # Copyright (c) 2026 Yuki Kimoto
 # MIT License
 
-class UV::Callback::Exit {
+class UV::Callback::Exit : interface_t {
   
+  use UV::Process;
   
-  static method my_method : void () {
-    
-  }
+  required method : void ($uv_process : UV::Process, $exit_status : long, $term_signal : int);
 }

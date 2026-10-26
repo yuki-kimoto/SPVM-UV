@@ -16,8 +16,6 @@ lib/SPVM/UV/Callback/Async.pm
 lib/SPVM/UV/Callback/Async.spvm
 lib/SPVM/UV/Callback/Close.pm
 lib/SPVM/UV/Callback/Close.spvm
-lib/SPVM/UV/Callback/Exit.build
-lib/SPVM/UV/Callback/Exit.c
 lib/SPVM/UV/Callback/Exit.pm
 lib/SPVM/UV/Callback/Exit.spvm
 lib/SPVM/UV/Callback/Idle.pm
