@@ -248,6 +248,87 @@ int32_t SPVM__UV__Loop__pipe_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
+static void SPVM__UV__Loop__exit_cb(uv_process_t* uv_process, int64_t exit_status, int term_signal) {
+  
+  int32_t error_id = 0;
+  
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = (SPVM__UV__Handle__HANDLE_DATA*)uv_process->data;
+  if (!uv_handle_data) {
+    return;
+  }
+  
+  SPVM_ENV* env = uv_handle_data->env;
+  SPVM_VALUE* stack = uv_handle_data->stack;
+  SPVM_OBJ* obj_uv_process = uv_handle_data->obj_uv_handle;
+  
+  SPVM_OBJ* obj_cb = env->get_field_object_by_name(env, stack, obj_uv_process, "exit_cb", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    spvm_diag("[Unexpected Error]Getting 'exit_cb' field failed.");
+    abort();
+  }
+  
+  if (obj_cb) {
+    stack[0].oval = obj_cb;
+    stack[1].oval = obj_uv_process;
+    stack[2].lval = exit_status;
+    stack[3].ival = term_signal;
+    env->call_instance_method_by_name(env, stack, "", 4, &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) {
+      spvm_diag("[An exception is converted to a warning in SPVM__UV__Loop__exit_cb]\n%s", env->get_exception_chars(env, stack));
+      return;
+    }
+  }
+}
+
+int32_t SPVM__UV__Loop__spawn(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  SPVM_OBJ* obj_uv_loop = stack[0].oval;
+  SPVM_OBJ* obj_uv_process = stack[1].oval;
+  SPVM_OBJ* obj_options = stack[2].oval;
+  
+  if (!obj_uv_process) {
+    return env->die(env, stack, "$uv_process must be defined.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  if (!obj_options) {
+    return env->die(env, stack, "$options must be defined.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  uv_loop_t* uv_loop = env->get_pointer(env, stack, obj_uv_loop);
+  assert(uv_loop);
+  
+  uv_process_t* uv_process = env->get_pointer(env, stack, obj_uv_process);
+  assert(uv_process);
+  
+  uv_process_options_t* options = env->get_pointer(env, stack, obj_options);
+  assert(options);
+  
+  SPVM_OBJ* obj_exit_cb = env->get_field_object_by_name(env, stack, obj_options, "exit_cb", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) return error_id;
+  if (obj_exit_cb) {
+    env->set_field_object_by_name(env, stack, obj_uv_process, "exit_cb", obj_exit_cb, &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) return error_id;
+    options->exit_cb = SPVM__UV__Loop__exit_cb;
+  }
+  
+  int32_t status = uv_spawn(uv_loop, uv_process, options);
+  
+  if (!(status == 0)) {
+    return env->die(env, stack, "uv_spawn failed. status=%d.", __func__, FILE_NAME, __LINE__, status);
+  }
+  
+  stack[0].oval = obj_uv_loop;
+  stack[1].oval = obj_uv_process;
+  env->call_instance_method_by_name(env, stack, "set_uv_handle", 2, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) return error_id;
+  
+  stack[0].ival = status;
+  
+  return 0;
+}
+
 int32_t SPVM__UV__Loop__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
