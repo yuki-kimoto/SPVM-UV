@@ -288,12 +288,18 @@ int32_t SPVM__UV__Loop__spawn(SPVM_ENV* env, SPVM_VALUE* stack) {
   SPVM_OBJ* obj_uv_process = stack[1].oval;
   SPVM_OBJ* obj_options = stack[2].oval;
   
+  char** argv = NULL;
+  char** envp = NULL;
+  uv_stdio_container_t* stdio_containers = NULL;
+  
   if (!obj_uv_process) {
-    return env->die(env, stack, "$uv_process must be defined.", __func__, FILE_NAME, __LINE__);
+    error_id = env->die(env, stack, "$uv_process must be defined.", __func__, FILE_NAME, __LINE__);
+    goto END_OF_FUNC;
   }
   
   if (!obj_options) {
-    return env->die(env, stack, "$options must be defined.", __func__, FILE_NAME, __LINE__);
+    error_id = env->die(env, stack, "$options must be defined.", __func__, FILE_NAME, __LINE__);
+    goto END_OF_FUNC;
   }
   
   uv_loop_t* uv_loop = env->get_pointer(env, stack, obj_uv_loop);
@@ -302,32 +308,139 @@ int32_t SPVM__UV__Loop__spawn(SPVM_ENV* env, SPVM_VALUE* stack) {
   uv_process_t* uv_process = env->get_pointer(env, stack, obj_uv_process);
   assert(uv_process);
   
-  uv_process_options_t* options = env->get_pointer(env, stack, obj_options);
-  assert(options);
+  uv_process_options_t options;
+  memset(&options, 0, sizeof(options));
   
-  SPVM_OBJ* obj_exit_cb = env->get_field_object_by_name(env, stack, obj_options, "exit_cb", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) return error_id;
-  if (obj_exit_cb) {
-    env->set_field_object_by_name(env, stack, obj_uv_process, "exit_cb", obj_exit_cb, &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) return error_id;
-    options->exit_cb = SPVM__UV__Loop__exit_cb;
+  SPVM_OBJ* obj_file = env->get_field_object_by_name(env, stack, obj_options, "file", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  const char* file_chars = obj_file ? env->get_chars(env, stack, obj_file) : NULL;
+  options.file = file_chars;
+  
+  SPVM_OBJ* obj_args = env->get_field_object_by_name(env, stack, obj_options, "args", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  if (obj_args) {
+    int32_t argc = env->length(env, stack, obj_args);
+    argv = (char**)env->new_memory_block(env, stack, (argc + 1) * sizeof(char*));
+    memset(argv, 0, (argc + 1) * sizeof(char*));
+    for (int32_t i = 0; i < argc; i++) {
+      SPVM_OBJ* obj_arg = env->get_elem_object(env, stack, obj_args, i);
+      argv[i] = obj_arg ? (char*)env->get_chars(env, stack, obj_arg) : NULL;
+    }
+    argv[argc] = NULL;
+    options.args = argv;
   }
   
-  int32_t status = uv_spawn(uv_loop, uv_process, options);
+  SPVM_OBJ* obj_env = env->get_field_object_by_name(env, stack, obj_options, "env", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  if (obj_env) {
+    int32_t envc = env->length(env, stack, obj_env);
+    envp = (char**)env->new_memory_block(env, stack, (envc + 1) * sizeof(char*));
+    memset(envp, 0, (envc + 1) * sizeof(char*));
+    for (int32_t i = 0; i < envc; i++) {
+      SPVM_OBJ* obj_env_elem = env->get_elem_object(env, stack, obj_env, i);
+      envp[i] = obj_env_elem ? (char*)env->get_chars(env, stack, obj_env_elem) : NULL;
+    }
+    envp[envc] = NULL;
+    options.env = envp;
+  }
+  
+  SPVM_OBJ* obj_cwd = env->get_field_object_by_name(env, stack, obj_options, "cwd", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  const char* cwd_chars = obj_cwd ? env->get_chars(env, stack, obj_cwd) : NULL;
+  options.cwd = cwd_chars;
+  
+  int32_t flags = env->get_field_int_by_name(env, stack, obj_options, "flags", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  options.flags = flags;
+  
+  SPVM_OBJ* obj_stdios = env->get_field_object_by_name(env, stack, obj_options, "stdios", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  if (obj_stdios) {
+    int32_t stdio_count = env->length(env, stack, obj_stdios);
+    options.stdio_count = stdio_count;
+    stdio_containers = (uv_stdio_container_t*)env->new_memory_block(env, stack, stdio_count * sizeof(uv_stdio_container_t));
+    memset(stdio_containers, 0, stdio_count * sizeof(uv_stdio_container_t));
+    for (int32_t i = 0; i < stdio_count; i++) {
+      SPVM_OBJ* obj_stdio = env->get_elem_object(env, stack, obj_stdios, i);
+      if (obj_stdio) {
+        uv_stdio_container_t* container_ptr = env->get_pointer(env, stack, obj_stdio);
+        if (container_ptr) {
+          stdio_containers[i] = *container_ptr;
+        }
+      }
+    }
+    options.stdio = stdio_containers;
+  }
+  
+  int32_t uid = env->get_field_int_by_name(env, stack, obj_options, "uid", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  options.uid = uid;
+  
+  int32_t gid = env->get_field_int_by_name(env, stack, obj_options, "gid", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  options.gid = gid;
+  
+  SPVM_OBJ* obj_exit_cb = env->get_field_object_by_name(env, stack, obj_options, "exit_cb", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
+  if (obj_exit_cb) {
+    env->set_field_object_by_name(env, stack, obj_uv_process, "exit_cb", obj_exit_cb, &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) {
+      goto END_OF_FUNC;
+    }
+    options.exit_cb = SPVM__UV__Loop__exit_cb;
+  }
+  
+  int32_t status = uv_spawn(uv_loop, uv_process, &options);
   
   if (!(status == 0)) {
-    return env->die(env, stack, "uv_spawn failed. status=%d.", __func__, FILE_NAME, __LINE__, status);
+    error_id = env->die(env, stack, "uv_spawn failed. status=%d.", __func__, FILE_NAME, __LINE__, status);
+    goto END_OF_FUNC;
   }
   
   stack[0].oval = obj_uv_loop;
   stack[1].oval = obj_uv_process;
   env->call_instance_method_by_name(env, stack, "set_uv_handle", 2, &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) return error_id;
+  if (error_id) {
+    goto END_OF_FUNC;
+  }
   
   stack[0].ival = status;
   
-  return 0;
+  error_id = 0;
+
+END_OF_FUNC:
+  
+  if (argv) {
+    env->free_memory_block(env, stack, argv);
+  }
+  if (envp) {
+    env->free_memory_block(env, stack, envp);
+  }
+  if (stdio_containers) {
+    env->free_memory_block(env, stack, stdio_containers);
+  }
+  
+  return error_id;
 }
+
 
 int32_t SPVM__UV__Loop__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   
