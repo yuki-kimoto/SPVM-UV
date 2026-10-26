@@ -146,6 +146,8 @@ package MY {
         'UV::Handle::Stream',
         'UV::Request',
         'UV::Request::Write',
+        'UV::Request::Write',
+        'UV::StdioContainer',
       ];
       
       $options->{precompile_classes} = [
