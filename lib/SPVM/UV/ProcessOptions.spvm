@@ -21,6 +21,10 @@ class UV::ProcessOptions {
   
   has exit_cb : rw UV::Callback::Exit;
   
+  has uid : rw int;
+  
+  has gid : rw int;
+  
   # Class Methods
   static method new : UV::ProcessOptions () {
     
