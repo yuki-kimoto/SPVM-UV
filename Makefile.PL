@@ -78,7 +78,7 @@ $jobs //= 1;
 
 my @test_clean_files = map { "t/" . join('', map { '*/' } 1 .. $_) . "*.$Config{so}" } (1 .. 10);
 my %configure_requires_and_prereq_pm = (
-  'SPVM' => '0.990198',
+  'SPVM' => '0.990204',
 );
 WriteMakefile(
   NAME => 'SPVM::UV',
