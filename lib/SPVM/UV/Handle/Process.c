@@ -13,8 +13,16 @@ int32_t SPVM__UV__Handle__Process__new(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   uv_process_t* uv_process = env->new_memory_block(env, stack, sizeof(uv_process_t));
   
+  SPVM__UV__Handle__HANDLE_DATA* uv_handle_data = env->new_memory_block(env, stack, sizeof(SPVM__UV__Handle__HANDLE_DATA));
+  uv_handle_data->env = env;
+  uv_handle_data->stack = stack;
+  
+  uv_process->data = uv_handle_data;
+  
   SPVM_OBJ* obj_uv_process = env->new_pointer_object_by_name(env, stack, "UV::Handle::Process", uv_process, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) return error_id;
+  
+  uv_handle_data->obj_uv_handle = obj_uv_process;
   
   stack[0].oval = obj_uv_process;
   
@@ -48,18 +56,3 @@ int32_t SPVM__UV__Handle__Process__kill(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__UV__Handle__Process__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
-  
-  int32_t error_id = 0;
-  
-  SPVM_OBJ* obj_uv_process = stack[0].oval;
-  
-  uv_process_t* uv_process = env->get_pointer(env, stack, obj_uv_process);
-  
-  int32_t no_free = env->no_free(env, stack, obj_uv_process);
-  if (!no_free) {
-    env->free_memory_block(env, stack, uv_process);
-  }
-  
-  return 0;
-}

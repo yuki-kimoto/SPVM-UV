@@ -8,7 +8,7 @@ class UV::Handle::Process extends UV::Handle {
   use UV::Callback::Exit;
   
   # Fields
-  has exit_cb : UV::Callback::Exit;
+  has exit_cb : rw UV::Callback::Exit;
   
   # Class Methods
   native static method new : UV::Handle::Process ();
@@ -17,7 +17,5 @@ class UV::Handle::Process extends UV::Handle {
   native method pid : int ();
   
   native method kill : int ($signum : int);
-  
-  native method DESTROY : void ();
   
 }
