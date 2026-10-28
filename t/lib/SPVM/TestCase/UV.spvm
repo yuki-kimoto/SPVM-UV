@@ -461,7 +461,7 @@ class TestCase::UV {
       
       my $options = UV::ProcessOptions->new;
       $options->set_file("perl");
-      $options->set_args(["perl", "-E", q'say STDOUT "out:hello"; say STDERR "err:hello";']);
+      $options->set_args(["perl", "-e", q'print STDOUT "out:hello"; print STDERR "err:hello";']);
       $options->set_stdios($stdios);
       
       $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
@@ -481,11 +481,11 @@ class TestCase::UV {
         return 0;
       }
       
-      unless ($stdout_length_ref->[0] == 10 && Fn->substr($stdout_data, 0, $stdout_length_ref->[0]) eq "out:hello\n") {
+      unless ($stdout_length_ref->[0] == 9 && Fn->substr($stdout_data, 0, $stdout_length_ref->[0]) eq "out:hello") {
         return 0;
       }
       
-      unless ($stderr_length_ref->[0] == 10 && Fn->substr($stderr_data, 0, $stderr_length_ref->[0]) eq "err:hello\n") {
+      unless ($stderr_length_ref->[0] == 9 && Fn->substr($stderr_data, 0, $stderr_length_ref->[0]) eq "err:hello") {
         return 0;
       }
     }
