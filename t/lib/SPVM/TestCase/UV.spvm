@@ -307,7 +307,7 @@ class TestCase::UV {
       my $options = UV::ProcessOptions->new;
       $options->set_file("perl");
       $options->set_args(["perl", "-e", "print 'hello'"]);
-      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[], $term_signal_ref : int[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+      $options->set_exit_cb([$exit_called_ref : , $status_ref : , $term_signal_ref : ] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
         $exit_called_ref->[0]++;
         $status_ref->[0] = $exit_status;
         $term_signal_ref->[0] = $term_signal;
@@ -357,7 +357,7 @@ class TestCase::UV {
       my $read_data = new_string_len 10;
       my $read_length_ref = [-1];
       
-      my $read_cb = [$read_pipe : UV::Handle::Pipe, $read_data : mutable string, $read_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $read_cb = [$read_pipe : , $read_data : , $read_length_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           my $copy_len = $nread > 10 ? 10 : (int)$nread;
           for (my $i = 0; $i < $copy_len; $i++) {
@@ -375,7 +375,7 @@ class TestCase::UV {
       $options->set_args(["perl", "-e", "print 'hello'"]);
       $options->set_stdios($stdios);
       
-      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+      $options->set_exit_cb([$exit_called_ref : , $status_ref : ] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
         $exit_called_ref->[0]++;
         $status_ref->[0] = $exit_status;
         $process_handle->close_safe;
@@ -430,7 +430,7 @@ class TestCase::UV {
       my $stdout_data = new_string_len 20;
       my $stdout_length_ref = [-1];
       
-      my $stdout_cb = [$stdout_pipe : UV::Handle::Pipe, $stdout_data : mutable string, $stdout_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $stdout_cb = [$stdout_pipe : , $stdout_data : , $stdout_length_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           my $copy_len = $nread > 20 ? 20 : (int)$nread;
           for (my $i = 0; $i < $copy_len; $i++) {
@@ -446,7 +446,7 @@ class TestCase::UV {
       my $stderr_data = new_string_len 20;
       my $stderr_length_ref = [-1];
       
-      my $stderr_cb = [$stderr_pipe : UV::Handle::Pipe, $stderr_data : mutable string, $stderr_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $stderr_cb = [$stderr_pipe : , $stderr_data : , $stderr_length_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           my $copy_len = $nread > 20 ? 20 : (int)$nread;
           for (my $i = 0; $i < $copy_len; $i++) {
@@ -464,7 +464,7 @@ class TestCase::UV {
       $options->set_args(["perl", "-e", q'print STDOUT "out:hello"; print STDERR "err:hello";']);
       $options->set_stdios($stdios);
       
-      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+      $options->set_exit_cb([$exit_called_ref : , $status_ref : ] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
         $exit_called_ref->[0]++;
         $status_ref->[0] = $exit_status;
         $process_handle->close_safe;
@@ -525,7 +525,7 @@ class TestCase::UV {
       my $stdout_data = new_string_len 20;
       my $stdout_length_ref = [-1];
       
-      my $stdout_cb = [$stdout_pipe : UV::Handle::Pipe, $stdout_data : mutable string, $stdout_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $stdout_cb = [$stdout_pipe : , $stdout_data : , $stdout_length_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           my $copy_len = $nread > 20 ? 20 : (int)$nread;
           for (my $i = 0; $i < $copy_len; $i++) {
@@ -541,7 +541,7 @@ class TestCase::UV {
       my $stderr_data = new_string_len 20;
       my $stderr_length_ref = [-1];
       
-      my $stderr_cb = [$stderr_pipe : UV::Handle::Pipe, $stderr_data : mutable string, $stderr_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $stderr_cb = [$stderr_pipe : , $stderr_data : , $stderr_length_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           my $copy_len = $nread > 20 ? 20 : (int)$nread;
           for (my $i = 0; $i < $copy_len; $i++) {
@@ -559,7 +559,7 @@ class TestCase::UV {
       $options->set_args(["perl", "-e", q'binmode STDOUT; binmode STDERR; my $in = <STDIN>; print STDOUT \'out:\' . $in; print STDERR \'err:\' . $in;']);
       $options->set_stdios($stdios);
       
-      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+      $options->set_exit_cb([$exit_called_ref : , $status_ref : ] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
         $exit_called_ref->[0]++;
         $status_ref->[0] = $exit_status;
         $process_handle->close_safe;
@@ -572,7 +572,7 @@ class TestCase::UV {
       
       my $write_req = UV::Request::Write->new;
       my $write_buf = "world\n";
-      $write_req->write($stdin_pipe, $write_buf, 6, [ $stdin_pipe : UV::Handle::Pipe ] method : void ($req : UV::Request::Write, $status : int) {
+      $write_req->write($stdin_pipe, $write_buf, 6, [ $stdin_pipe : ] method : void ($req : UV::Request::Write, $status : int) {
         $req->set_write_cb(undef);
         $stdin_pipe->close_safe;
       });
@@ -622,7 +622,7 @@ class TestCase::UV {
       my $data = new_string_len 20;
       my $length_ref = [-1];
       
-      my $cb = [$pipe3 : UV::Handle::Pipe, $data : mutable string, $length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $cb = [$pipe3 : UV::Handle::Pipe, $data : mutable string, $length_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           my $copy_len = $nread > 20 ? 20 : (int)$nread;
           for (my $i = 0; $i < $copy_len; $i++) {
@@ -640,7 +640,7 @@ class TestCase::UV {
       $options->set_args(["perl", "-e", q'open(my $fh, ">&=3") or die $!; syswrite($fh, "data:fd3");']);
       $options->set_stdios($stdios);
       
-      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+      $options->set_exit_cb([$exit_called_ref : , $status_ref : ] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
         $exit_called_ref->[0]++;
         $status_ref->[0] = $exit_status;
         $process_handle->close_safe;
@@ -670,7 +670,7 @@ class TestCase::UV {
       my $non_blocking = 1;
       Sys->pipepair(\$fd1, \$fd2, $non_blocking);
       
-      Fn->defer([$fd1 : int, $fd2 : int] method : void () {
+      Fn->defer([$fd1 : , $fd2 : ] method : void () {
         Sys::IO->close($fd1);
         Sys::IO->close($fd2);
       });
@@ -704,7 +704,7 @@ class TestCase::UV {
       my $pair_read_data = new_string_len 10;
       my $pair_read_length_ref = [-1];
       
-      my $pair_read_cb = [$pipe_out : UV::Handle::Pipe, $pair_read_data : mutable string, $pair_read_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $pair_read_cb = [$pipe_out : , $pair_read_data : , $pair_read_length_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           my $copy_len = $nread > 10 ? 10 : (int)$nread;
           for (my $i = 0; $i < $copy_len; $i++) {
@@ -720,14 +720,14 @@ class TestCase::UV {
       # Hold write request reference to prevent premature GC/destruction
       my $write_req_ref = [(UV::Request::Write)undef];
       
-      my $read_cb = [$read_pipe : UV::Handle::Pipe, $pipe_in : UV::Handle::Pipe, $pipe_out : UV::Handle::Pipe, $pair_read_data : mutable string, $pair_read_length_ref : int[], $pair_read_cb : UV::Callback::Read, $write_req_ref : UV::Request::Write[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+      my $read_cb = [$read_pipe : UV::Handle::Pipe, $pipe_in : UV::Handle::Pipe, $pipe_out : UV::Handle::Pipe, $pair_read_data : mutable string, $pair_read_length_ref : int[], $pair_read_cb : UV::Callback::Read, $write_req_ref : ] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
         if ($nread > 0) {
           $pipe_out->read_start($pair_read_data, 10, $pair_read_cb);
           
           my $write_req = UV::Request::Write->new;
           $write_req_ref->[0] = $write_req;
           
-          $write_req->write($pipe_in, $buf, (int)$nread, [$pipe_in : UV::Handle::Pipe, $write_req_ref : UV::Request::Write[]] method : void ($req : UV::Request::Write, $status : int) {
+          $write_req->write($pipe_in, $buf, (int)$nread, [$pipe_in : , $write_req_ref : ] method : void ($req : UV::Request::Write, $status : int) {
             $pipe_in->close_safe;
             $write_req_ref->[0] = undef;
           });
@@ -747,7 +747,7 @@ class TestCase::UV {
       $options->set_args(["perl", "-e", "print 'hello'"]);
       $options->set_stdios($stdios);
       
-      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+      $options->set_exit_cb([$exit_called_ref : , $status_ref : ] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
         $exit_called_ref->[0]++;
         $status_ref->[0] = $exit_status;
         $process_handle->close_safe;
