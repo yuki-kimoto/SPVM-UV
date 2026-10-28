@@ -69,8 +69,6 @@ lib/SPVM/UV/Loop.build
 lib/SPVM/UV/Loop.c
 lib/SPVM/UV/Loop.pm
 lib/SPVM/UV/Loop.spvm
-lib/SPVM/UV/ProcessOptions.build
-lib/SPVM/UV/ProcessOptions.c
 lib/SPVM/UV/ProcessOptions.pm
 lib/SPVM/UV/ProcessOptions.spvm
 lib/SPVM/UV/Request.build
