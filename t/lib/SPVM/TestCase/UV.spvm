@@ -591,7 +591,76 @@ class TestCase::UV {
         return 0;
       }
     }
-
+    
+    # Pipe - Custom FD 3 with syswrite
+    {
+      my $loop = UV::Loop->new;
+      
+      my $pipe3 = UV::Handle::Pipe->new;
+      $loop->pipe_init($pipe3, 0);
+      
+      my $container0 = UV::StdioContainer->new;
+      $container0->set_flags(UV_C->UV_IGNORE);
+      
+      my $container1 = UV::StdioContainer->new;
+      $container1->set_flags(UV_C->UV_IGNORE);
+      
+      my $container2 = UV::StdioContainer->new;
+      $container2->set_flags(UV_C->UV_IGNORE);
+      
+      my $container3 = UV::StdioContainer->new;
+      $container3->set_flags(UV_C->UV_CREATE_PIPE | UV_C->UV_WRITABLE_PIPE);
+      $container3->set_stream($pipe3);
+      
+      my $stdios = [$container0, $container1, $container2, $container3];
+      
+      my $process = UV::Handle::Process->new;
+      
+      my $exit_called_ref = [0];
+      my $status_ref = [(long)-1];
+      
+      my $data = new_string_len 20;
+      my $length_ref = [-1];
+      
+      my $cb = [$pipe3 : UV::Handle::Pipe, $data : mutable string, $length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+        if ($nread > 0) {
+          my $copy_len = $nread > 20 ? 20 : (int)$nread;
+          for (my $i = 0; $i < $copy_len; $i++) {
+            $data->[$i] = $buf->[$i];
+          }
+          $length_ref->[0] = (int)$nread;
+        }
+        $stream->close_safe;
+        $pipe3->close_safe;
+      };
+      weaken $cb->{pipe3};
+      
+      my $options = UV::ProcessOptions->new;
+      $options->set_file("perl");
+      $options->set_args(["perl", "-e", q'open(my $fh, ">&=3") or die $!; syswrite($fh, "data:fd3");']);
+      $options->set_stdios($stdios);
+      
+      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+        $exit_called_ref->[0]++;
+        $status_ref->[0] = $exit_status;
+        $process_handle->close_safe;
+      });
+      
+      $loop->spawn($process, $options);
+      
+      $pipe3->read_start($data, 20, $cb);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($exit_called_ref->[0] == 1 && $status_ref->[0] == 0) {
+        return 0;
+      }
+      
+      unless ($length_ref->[0] == 8 && Fn->substr($data, 0, $length_ref->[0]) eq "data:fd3") {
+        return 0;
+      }
+    }
+  
     return 1;
   }
   
