@@ -334,6 +334,70 @@ class TestCase::UV {
       }
     }
     
+    {
+      my $loop = UV::Loop->new;
+      
+      my $read_pipe = UV::Handle::Pipe->new;
+      $loop->pipe_init($read_pipe, 0);
+      
+      my $container0 = UV::StdioContainer->new;
+      $container0->set_flags(UV_C->UV_IGNORE);
+      
+      my $container1 = UV::StdioContainer->new;
+      $container1->set_flags(UV_C->UV_CREATE_PIPE | UV_C->UV_WRITABLE_PIPE);
+      $container1->set_stream($read_pipe);
+      
+      my $stdios = [$container0, $container1];
+      
+      my $process = UV::Handle::Process->new;
+      
+      my $exit_called_ref = [0];
+      my $status_ref = [(long)-1];
+      my $read_data = new_string_len 10;
+      my $read_length_ref = [-1];
+      
+      my $read_cb = [$read_pipe : UV::Handle::Pipe, $read_data : mutable string, $read_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+        if ($nread > 0) {
+          my $copy_len = $nread > 10 ? 10 : (int)$nread;
+          for (my $i = 0; $i < $copy_len; $i++) {
+            $read_data->[$i] = $buf->[$i];
+          }
+          $read_length_ref->[0] = (int)$nread;
+        }
+        $stream->close_safe;
+        $read_pipe->close_safe;
+      };
+      weaken $read_cb->{read_pipe};
+      
+      my $options = UV::ProcessOptions->new;
+      $options->set_file("perl");
+      $options->set_args(["perl", "-e", "print 'hello'"]);
+      $options->set_stdios($stdios);
+      
+      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+        $exit_called_ref->[0]++;
+        $status_ref->[0] = $exit_status;
+        $process_handle->close_safe;
+      });
+      
+      $loop->spawn($process, $options);
+      
+      $read_pipe->read_start($read_data, 10, $read_cb);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($exit_called_ref->[0] == 1 && $status_ref->[0] == 0) {
+        diag;
+        return 0;
+      }
+      
+      unless ($read_length_ref->[0] == 5 && Fn->substr($read_data, 0, $read_length_ref->[0])  eq "hello") {
+        diag $read_length_ref->[0];
+        diag $read_data;
+        return 0;
+      }
+    }
+    
     return 1;
   }
   
