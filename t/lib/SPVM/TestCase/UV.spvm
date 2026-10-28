@@ -490,8 +490,6 @@ class TestCase::UV {
       }
     }
 
-=pod TODO
-
     # Pipe - Input, stdout, and stderr
     {
       my $loop = UV::Loop->new;
@@ -558,7 +556,7 @@ class TestCase::UV {
       
       my $options = UV::ProcessOptions->new;
       $options->set_file("perl");
-      $options->set_args(["perl", "-e", q'my $in = <STDIN>; print STDOUT \'out:\' . $in; print STDERR \'err:\' . $in;']);
+      $options->set_args(["perl", "-e", q'binmode STDOUT; binmode STDERR; my $in = <STDIN>; print STDOUT \'out:\' . $in; print STDERR \'err:\' . $in;']);
       $options->set_stdios($stdios);
       
       $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
@@ -593,8 +591,6 @@ class TestCase::UV {
         return 0;
       }
     }
-
-=cut
 
     return 1;
   }
