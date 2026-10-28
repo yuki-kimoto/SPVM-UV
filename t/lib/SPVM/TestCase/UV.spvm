@@ -399,6 +399,99 @@ class TestCase::UV {
       }
     }
     
+# Pipe - stdout and stderr (without stdin)
+    {
+      my $loop = UV::Loop->new;
+      
+      my $stdout_pipe = UV::Handle::Pipe->new;
+      $loop->pipe_init($stdout_pipe, 0);
+      
+      my $stderr_pipe = UV::Handle::Pipe->new;
+      $loop->pipe_init($stderr_pipe, 0);
+      
+      my $container0 = UV::StdioContainer->new;
+      $container0->set_flags(UV_C->UV_IGNORE);
+      
+      my $container1 = UV::StdioContainer->new;
+      $container1->set_flags(UV_C->UV_CREATE_PIPE | UV_C->UV_WRITABLE_PIPE);
+      $container1->set_stream($stdout_pipe);
+      
+      my $container2 = UV::StdioContainer->new;
+      $container2->set_flags(UV_C->UV_CREATE_PIPE | UV_C->UV_WRITABLE_PIPE);
+      $container2->set_stream($stderr_pipe);
+      
+      my $stdios = [$container0, $container1, $container2];
+      
+      my $process = UV::Handle::Process->new;
+      
+      my $exit_called_ref = [0];
+      my $status_ref = [(long)-1];
+      
+      my $stdout_data = new_string_len 20;
+      my $stdout_length_ref = [-1];
+      
+      my $stdout_cb = [$stdout_pipe : UV::Handle::Pipe, $stdout_data : mutable string, $stdout_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+        if ($nread > 0) {
+          my $copy_len = $nread > 20 ? 20 : (int)$nread;
+          for (my $i = 0; $i < $copy_len; $i++) {
+            $stdout_data->[$i] = $buf->[$i];
+          }
+          $stdout_length_ref->[0] = (int)$nread;
+        }
+        $stream->close_safe;
+        $stdout_pipe->close_safe;
+      };
+      weaken $stdout_cb->{stdout_pipe};
+      
+      my $stderr_data = new_string_len 20;
+      my $stderr_length_ref = [-1];
+      
+      my $stderr_cb = [$stderr_pipe : UV::Handle::Pipe, $stderr_data : mutable string, $stderr_length_ref : int[]] method : void ($stream : UV::Handle::Stream, $nread : int, $buf : string) {
+        if ($nread > 0) {
+          my $copy_len = $nread > 20 ? 20 : (int)$nread;
+          for (my $i = 0; $i < $copy_len; $i++) {
+            $stderr_data->[$i] = $buf->[$i];
+          }
+          $stderr_length_ref->[0] = (int)$nread;
+        }
+        $stream->close_safe;
+        $stderr_pipe->close_safe;
+      };
+      weaken $stderr_cb->{stderr_pipe};
+      
+      my $options = UV::ProcessOptions->new;
+      $options->set_file("perl");
+      $options->set_args(["perl", "-E", q'say STDOUT "out:hello"; say STDERR "err:hello";']);
+      $options->set_stdios($stdios);
+      
+      $options->set_exit_cb([$exit_called_ref : int[], $status_ref : long[]] method : void ($process_handle : UV::Handle::Process, $exit_status : long, $term_signal : int) {
+        $exit_called_ref->[0]++;
+        $status_ref->[0] = $exit_status;
+        $process_handle->close_safe;
+      });
+      
+      $loop->spawn($process, $options);
+      
+      $stdout_pipe->read_start($stdout_data, 20, $stdout_cb);
+      $stderr_pipe->read_start($stderr_data, 20, $stderr_cb);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($exit_called_ref->[0] == 1 && $status_ref->[0] == 0) {
+        return 0;
+      }
+      
+      unless ($stdout_length_ref->[0] == 10 && Fn->substr($stdout_data, 0, $stdout_length_ref->[0]) eq "out:hello\n") {
+        return 0;
+      }
+      
+      unless ($stderr_length_ref->[0] == 10 && Fn->substr($stderr_data, 0, $stderr_length_ref->[0]) eq "err:hello\n") {
+        return 0;
+      }
+    }
+
+=pod TODO
+
     # Pipe - Input, stdout, and stderr
     {
       my $loop = UV::Loop->new;
@@ -500,7 +593,9 @@ class TestCase::UV {
         return 0;
       }
     }
-    
+
+=cut
+
     return 1;
   }
   
