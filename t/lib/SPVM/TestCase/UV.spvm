@@ -114,6 +114,8 @@ class TestCase::UV {
     
     $timer->start([$called_count_ref : int[]] method : void ($timer_handle : UV::Handle::Timer) {
       $called_count_ref->[0]++;
+      $timer_handle->again;
+      $timer_handle->stop;
       $timer_handle->close_safe;
     }, 10, 0);
     
