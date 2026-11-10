@@ -1,3 +1,6 @@
+0.006 2026-11-11
+  [New Features]
+    * Add stop method to UV::Handle::Idle class.
 0.005 2026-11-11
   [New Features]
     * Add stop method to UV::Handle::Timer class.
