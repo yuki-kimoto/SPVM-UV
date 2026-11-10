@@ -139,6 +139,7 @@ class TestCase::UV {
     
     $idle->start([$called_count_ref : int[]] method : void ($idle_handle : UV::Handle::Idle) {
       $called_count_ref->[0]++;
+      $idle_handle->stop;
       $idle_handle->close_safe;
     });
     
