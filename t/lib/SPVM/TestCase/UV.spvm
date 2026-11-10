@@ -214,6 +214,7 @@ class TestCase::UV {
         else {
           $status_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $fd1_pipe->close_safe;
       };
@@ -271,6 +272,7 @@ class TestCase::UV {
         else {
           $status_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $fd2_pipe->close_safe;
       };
@@ -367,6 +369,7 @@ class TestCase::UV {
           }
           $read_length_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $read_pipe->close_safe;
       };
@@ -440,6 +443,7 @@ class TestCase::UV {
           }
           $stdout_length_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $stdout_pipe->close_safe;
       };
@@ -456,6 +460,7 @@ class TestCase::UV {
           }
           $stderr_length_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $stderr_pipe->close_safe;
       };
@@ -535,6 +540,7 @@ class TestCase::UV {
           }
           $stdout_length_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $stdout_pipe->close_safe;
       };
@@ -551,6 +557,7 @@ class TestCase::UV {
           }
           $stderr_length_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $stderr_pipe->close_safe;
       };
@@ -632,6 +639,7 @@ class TestCase::UV {
           }
           $length_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $pipe3->close_safe;
       };
@@ -714,6 +722,7 @@ class TestCase::UV {
           }
           $pair_read_length_ref->[0] = (int)$nread;
         }
+        $stream->read_stop;
         $stream->close_safe;
         $pipe_out->close_safe;
       };
@@ -735,6 +744,7 @@ class TestCase::UV {
           });
         }
         else {
+          $stream->read_stop;
           $stream->close_safe;
           $read_pipe->close_safe;
         }
