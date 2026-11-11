@@ -42,6 +42,7 @@ class TestCase::UV {
       $poll->start([$fd1 : int, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($poll_handle : UV::Handle::Poll, $status : int, $events : int) {
         $status_ref->[0] = $status;
         $read_length_ref->[0] = Sys::Socket->recv($fd1, $read_data, 5, 0);
+        $poll_handle->stop;
         $poll_handle->close_safe;
       }, UV_C->UV_READABLE | UV_C->UV_WRITABLE);
       
@@ -84,6 +85,7 @@ class TestCase::UV {
       $poll->start([$fd2 : int, $read_data : mutable string, $read_length_ref : int[], $status_ref : int[]] method : void ($poll_handle : UV::Handle::Poll, $status : int, $events : int) {
         $status_ref->[0] = $status;
         $read_length_ref->[0] = Sys::Socket->recv($fd2, $read_data, 5, 0);
+        $poll_handle->stop;
         $poll_handle->close_safe;
       }, UV_C->UV_READABLE | UV_C->UV_WRITABLE);
       

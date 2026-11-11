@@ -1,3 +1,6 @@
+0.007 2026-11-11
+  [New Features]
+    * Add stop method to UV::Handle::Poll class.
 0.006 2026-11-11
   [New Features]
     * Add stop method to UV::Handle::Idle class.
