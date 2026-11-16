@@ -28,16 +28,25 @@ ok(SPVM::TestCase::UV->spawn);
 ok(SPVM::TestCase::UV->signal);
 
 {
-  {
     my $tmp_dir = File::Temp->newdir;
-    ok(SPVM::TestCase::UV->fs_event("$tmp_dir"));
+    my $tmp_dir_path = "$tmp_dir";
+    # Convert short path to long path on Windows to avoid libuv fs-event assertion failure
+    if ($^O eq 'MSWin32') {
+      require Win32;
+      $tmp_dir_path = Win32::GetLongPathName($tmp_dir_path);
+    }
+    ok(SPVM::TestCase::UV->fs_event($tmp_dir_path));
   }
   {
     my $tmp_dir = File::Temp->newdir;
-    ok(SPVM::TestCase::UV->fs_event_constants("$tmp_dir"));
+    my $tmp_dir_path = "$tmp_dir";
+    # Convert short path to long path on Windows to avoid libuv fs-event assertion failure
+    if ($^O eq 'MSWin32') {
+      require Win32;
+      $tmp_dir_path = Win32::GetLongPathName($tmp_dir_path);
+    }
+    ok(SPVM::TestCase::UV->fs_event_constants($tmp_dir_path));
   }
-}
-
 # Version check
 is($SPVM::UV::VERSION, $api->get_version_string("UV"));
 
