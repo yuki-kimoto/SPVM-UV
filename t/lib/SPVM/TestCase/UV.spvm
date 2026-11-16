@@ -822,6 +822,134 @@ class TestCase::UV {
       }
     }
     
+    # SIGTERM
+    {
+      my $loop = UV::Loop->new;
+      
+      my $signal = UV::Handle::Signal->new;
+      $loop->signal_init($signal);
+      
+      my $called_count_ref = [0];
+      my $received_signum_ref = [-1];
+      
+      $signal->start([$called_count_ref : int[], $received_signum_ref : int[]] method : void ($signal_handle : UV::Handle::Signal, $signum : int) {
+        $called_count_ref->[0]++;
+        $received_signum_ref->[0] = $signum;
+        $signal_handle->stop;
+        $signal_handle->close_safe;
+      }, SIGNAL_C->SIGTERM);
+      
+      # Send SIGTERM to self
+      Sys::Signal->raise(SIGNAL_C->SIGTERM);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($called_count_ref->[0] == 1) {
+        return 0;
+      }
+      
+      unless ($received_signum_ref->[0] == SIGNAL_C->SIGTERM) {
+        return 0;
+      }
+    }
+    
+    # SIGHUP
+    {
+      my $loop = UV::Loop->new;
+      
+      my $signal = UV::Handle::Signal->new;
+      $loop->signal_init($signal);
+      
+      my $called_count_ref = [0];
+      my $received_signum_ref = [-1];
+      
+      $signal->start([$called_count_ref : int[], $received_signum_ref : int[]] method : void ($signal_handle : UV::Handle::Signal, $signum : int) {
+        $called_count_ref->[0]++;
+        $received_signum_ref->[0] = $signum;
+        $signal_handle->stop;
+        $signal_handle->close_safe;
+      }, SIGNAL_C->SIGHUP);
+      
+      # Send SIGHUP to self
+      Sys::Signal->raise(SIGNAL_C->SIGHUP);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($called_count_ref->[0] == 1) {
+        return 0;
+      }
+      
+      unless ($received_signum_ref->[0] == SIGNAL_C->SIGHUP) {
+        return 0;
+      }
+    }
+
+=pod TODO
+
+    # SIGBREAK
+    {
+      my $loop = UV::Loop->new;
+      
+      my $signal = UV::Handle::Signal->new;
+      $loop->signal_init($signal);
+      
+      my $called_count_ref = [0];
+      my $received_signum_ref = [-1];
+      
+      $signal->start([$called_count_ref : int[], $received_signum_ref : int[]] method : void ($signal_handle : UV::Handle::Signal, $signum : int) {
+        $called_count_ref->[0]++;
+        $received_signum_ref->[0] = $signum;
+        $signal_handle->stop;
+        $signal_handle->close_safe;
+      }, SIGNAL_C->SIGBREAK);
+      
+      # Send SIGBREAK to self
+      Sys::Signal->raise(SIGNAL_C->SIGBREAK);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($called_count_ref->[0] == 1) {
+        return 0;
+      }
+      
+      unless ($received_signum_ref->[0] == SIGNAL_C->SIGBREAK) {
+        return 0;
+      }
+    }
+
+=cut
+
+    # SIGWINCH
+    {
+      my $loop = UV::Loop->new;
+      
+      my $signal = UV::Handle::Signal->new;
+      $loop->signal_init($signal);
+      
+      my $called_count_ref = [0];
+      my $received_signum_ref = [-1];
+      
+      $signal->start([$called_count_ref : int[], $received_signum_ref : int[]] method : void ($signal_handle : UV::Handle::Signal, $signum : int) {
+        $called_count_ref->[0]++;
+        $received_signum_ref->[0] = $signum;
+        $signal_handle->stop;
+        $signal_handle->close_safe;
+      }, SIGNAL_C->SIGWINCH);
+      
+      # Send SIGWINCH to self
+      Sys::Signal->raise(SIGNAL_C->SIGWINCH);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($called_count_ref->[0] == 1) {
+        return 0;
+      }
+      
+      unless ($received_signum_ref->[0] == SIGNAL_C->SIGWINCH) {
+        return 0;
+      }
+    }
+    
     return 1;
   }
   
