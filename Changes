@@ -1,3 +1,9 @@
+0.008 2026-11-16
+  [Summary]
+    * Support signal.
+  [New Features]
+    * Add signal_init method to UV::Loop.
+    * Add UV::Handle::Signal class.
 0.007 2026-11-11
   [New Features]
     * Add stop method to UV::Handle::Poll class.
