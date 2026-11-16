@@ -492,3 +492,31 @@ int32_t SPVM__UV__Loop__signal_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   return 0;
 }
+
+int32_t SPVM__UV__Loop__fs_event_init(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  SPVM_OBJ* obj_uv_loop = stack[0].oval;
+  SPVM_OBJ* obj_uv_fs_event = stack[1].oval;
+  
+  if (!obj_uv_fs_event) {
+    return env->die(env, stack, "$uv_fs_event must be defined.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  uv_loop_t* uv_loop = env->get_pointer(env, stack, obj_uv_loop);
+  uv_fs_event_t* uv_fs_event = env->get_pointer(env, stack, obj_uv_fs_event);
+  
+  int32_t status = uv_fs_event_init(uv_loop, uv_fs_event);
+  
+  if (!(status == 0)) {
+    return env->die(env, stack, "uv_fs_event_init failed. status=%d.", __func__, FILE_NAME, __LINE__, status);
+  }
+  
+  stack[0].oval = obj_uv_loop;
+  stack[1].oval = obj_uv_fs_event;
+  env->call_instance_method_by_name(env, stack, "set_uv_handle", 2, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) return error_id;
+  
+  return 0;
+}

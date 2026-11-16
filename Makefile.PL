@@ -150,6 +150,7 @@ package MY {
         'UV::StdioContainer',
         'UV::Handle::Process',
         'UV::Handle::Signal',
+        'UV::Handle::FsEvent',
       ];
       
       $options->{precompile_classes} = [

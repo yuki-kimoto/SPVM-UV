@@ -20,6 +20,7 @@ class UV::Loop : pointer {
   use UV::Callback::Write;
   use UV::Callback::Close;
   use UV::Handle::Signal;
+  use UV::Handle::FsEvent;
   
   use UV::Handle::Process;
   use UV::ProcessOptions;
@@ -92,5 +93,7 @@ class UV::Loop : pointer {
   native method signal_init : void ($uv_signal : UV::Handle::Signal);
   
   native method DESTROY : void ();
+  
+  native method fs_event_init : void ($uv_fs_event : UV::Handle::FsEvent);
   
 }

@@ -137,6 +137,18 @@ $uv_signal must be defined. Otherwise an exception is thrown.
 
 If C<uv_signal_init> fails, an exception is thrown.
 
+=head2 fs_event_init
+
+C<method fs_event_init : void ($uv_fs_event : L<UV::Handle::FsEvent|SPVM::UV::Handle::FsEvent>);>
+
+Initializes a file system event handle $uv_fs_event associated with the event loop. See L<uv_fs_event_init|https://docs.libuv.org/en/v1.x/fs_event.html#c.uv_fs_event_init>.
+
+Exceptions:
+
+$uv_fs_event must be defined. Otherwise an exception is thrown.
+
+If C<uv_fs_event_init> fails, an exception is thrown.
+
 =head2 DESTROY
 
 C<method DESTROY : void ();>
