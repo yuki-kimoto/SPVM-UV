@@ -1,3 +1,9 @@
+0.009 2026-11-16
+  [Summary]
+    * Support uv_fs_event_t.
+  [New Features]
+    * Add fs_event_init method to UV::Loop.
+    * Add UV::Handle::FsEvent class.
 0.008 2026-11-16
   [Summary]
     * Support signal.
