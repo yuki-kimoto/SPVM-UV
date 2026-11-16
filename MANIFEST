@@ -57,6 +57,10 @@ lib/SPVM/UV/Handle/Process.build
 lib/SPVM/UV/Handle/Process.c
 lib/SPVM/UV/Handle/Process.pm
 lib/SPVM/UV/Handle/Process.spvm
+lib/SPVM/UV/Handle/Signal.build
+lib/SPVM/UV/Handle/Signal.c
+lib/SPVM/UV/Handle/Signal.pm
+lib/SPVM/UV/Handle/Signal.spvm
 lib/SPVM/UV/Handle/Stream.build
 lib/SPVM/UV/Handle/Stream.c
 lib/SPVM/UV/Handle/Stream.pm
