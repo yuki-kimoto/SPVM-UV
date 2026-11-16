@@ -791,32 +791,35 @@ class TestCase::UV {
   
   static method signal : int () {
     
-    my $loop = UV::Loop->new;
-    
-    my $signal = UV::Handle::Signal->new;
-    $loop->signal_init($signal);
-    
-    my $called_count_ref = [0];
-    my $received_signum_ref = [-1];
-    
-    $signal->start([$called_count_ref : int[], $received_signum_ref : int[]] method : void ($signal_handle : UV::Handle::Signal, $signum : int) {
-      $called_count_ref->[0]++;
-      $received_signum_ref->[0] = $signum;
-      $signal_handle->stop;
-      $signal_handle->close_safe;
-    }, SIGNAL_C->SIGINT);
-    
-    # Send SIGINT to self
-    Sys::Signal->raise(SIGNAL_C->SIGINT);
-    
-    $loop->run(UV_C->UV_RUN_DEFAULT);
-    
-    unless ($called_count_ref->[0] == 1) {
-      return 0;
-    }
-    
-    unless ($received_signum_ref->[0] == SIGNAL_C->SIGINT) {
-      return 0;
+    # SIGINT
+    {
+      my $loop = UV::Loop->new;
+      
+      my $signal = UV::Handle::Signal->new;
+      $loop->signal_init($signal);
+      
+      my $called_count_ref = [0];
+      my $received_signum_ref = [-1];
+      
+      $signal->start([$called_count_ref : int[], $received_signum_ref : int[]] method : void ($signal_handle : UV::Handle::Signal, $signum : int) {
+        $called_count_ref->[0]++;
+        $received_signum_ref->[0] = $signum;
+        $signal_handle->stop;
+        $signal_handle->close_safe;
+      }, SIGNAL_C->SIGINT);
+      
+      # Send SIGINT to self
+      Sys::Signal->raise(SIGNAL_C->SIGINT);
+      
+      $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      unless ($called_count_ref->[0] == 1) {
+        return 0;
+      }
+      
+      unless ($received_signum_ref->[0] == SIGNAL_C->SIGINT) {
+        return 0;
+      }
     }
     
     return 1;
