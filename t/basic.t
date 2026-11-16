@@ -5,6 +5,8 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
+use File::Temp ();
+
 use SPVM 'TestCase::UV';
 
 use SPVM 'UV';
@@ -25,6 +27,16 @@ ok(SPVM::TestCase::UV->pipe);
 ok(SPVM::TestCase::UV->spawn);
 ok(SPVM::TestCase::UV->signal);
 
+{
+  {
+    my $tmp_dir = File::Temp->newdir;
+    ok(SPVM::TestCase::UV->fs_event("$tmp_dir"));
+  }
+  {
+    my $tmp_dir = File::Temp->newdir;
+    ok(SPVM::TestCase::UV->fs_event_constants("$tmp_dir"));
+  }
+}
 
 # Version check
 is($SPVM::UV::VERSION, $api->get_version_string("UV"));

@@ -923,4 +923,105 @@ class TestCase::UV {
     return 1;
   }
   
+  static method fs_event : int ($temp_dir : string) {
+    
+    my $loop = UV::Loop->new;
+    
+    my $fs_event = UV::Handle::FsEvent->new;
+    $loop->fs_event_init($fs_event);
+    
+    my $called_count_ref = [0];
+    my $filename_ref = [(string)undef];
+    my $events_ref = [0];
+    my $status_ref = [0];
+    
+    my $target_file = $temp_dir . "/test_fs_event.txt";
+    
+    {
+      Sys->open(my $_ = [(Sys::IO::FileStream)undef], "w", $target_file);
+      my $fh = $_->[0];
+      Sys->close($fh);
+    }
+    
+    $fs_event->start([$called_count_ref : int[], $filename_ref : string[], $events_ref : int[], $status_ref : int[]] method : void ($fs_event_handle : UV::Handle::FsEvent, $filename : string, $events : int, $status : int) {
+      $called_count_ref->[0]++;
+      $filename_ref->[0] = $filename;
+      $events_ref->[0] = $events;
+      $status_ref->[0] = $status;
+      $fs_event_handle->stop;
+      $fs_event_handle->close_safe;
+    }, $target_file, 0);
+    
+    {
+      Sys->open(my $_ = [(Sys::IO::FileStream)undef], "w", $target_file);
+      my $fh = $_->[0];
+      Sys->print($fh, "hello fs_event");
+      Sys->close($fh);
+    }
+    
+    $loop->run(UV_C->UV_RUN_DEFAULT);
+    
+    Sys->unlink($target_file);
+    
+    unless ($called_count_ref->[0] > 0) {
+      return 0;
+    }
+    
+    unless ($status_ref->[0] == 0) {
+      return 0;
+    }
+    
+    return 1;
+  }
+
+  static method fs_event_constants : int ($temp_dir : string) {
+    
+    my $loop = UV::Loop->new;
+    
+    my $fs_event = UV::Handle::FsEvent->new;
+    $loop->fs_event_init($fs_event);
+    
+    my $called_count_ref = [0];
+    my $events_ref = [0];
+    
+    my $target_file = $temp_dir . "/test_fs_event_const.txt";
+    
+    {
+      Sys->open(my $_ = [(Sys::IO::FileStream)undef], "w", $target_file);
+      my $fh = $_->[0];
+      Sys->close($fh);
+    }
+    
+    $fs_event->start([$called_count_ref : int[], $events_ref : int[]] method : void ($fs_event_handle : UV::Handle::FsEvent, $filename : string, $events : int, $status : int) {
+      $called_count_ref->[0]++;
+      $events_ref->[0] = $events;
+      $fs_event_handle->stop;
+      $fs_event_handle->close_safe;
+    }, $target_file, 0);
+    
+    {
+      Sys->open(my $_ = [(Sys::IO::FileStream)undef], "w", $target_file);
+      my $fh = $_->[0];
+      Sys->print($fh, "test constants");
+      Sys->close($fh);
+    }
+    
+    $loop->run(UV_C->UV_RUN_DEFAULT);
+    
+    Sys->unlink($target_file);
+    
+    unless ($called_count_ref->[0] > 0) {
+      return 0;
+    }
+    
+    my $rename_const = UV_C->UV_RENAME;
+    my $change_const = UV_C->UV_CHANGE;
+    
+    if (($events_ref->[0] & ($rename_const | $change_const)) == 0) {
+      return 0;
+    }
+    
+    return 1;
+  }
+  
 }
