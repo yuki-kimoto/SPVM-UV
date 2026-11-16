@@ -125,6 +125,18 @@ $options must be defined. Otherwise an exception is thrown.
 
 If C<uv_spawn> fails, an exception is thrown.
 
+=head2 signal_init
+
+C<method signal_init : void ($uv_signal : L<UV::Handle::Signal|SPVM::UV::Handle::Signal>);>
+
+Initializes a signal handle $uv_signal associated with the event loop. See L<uv_signal_init|https://docs.libuv.org/en/v1.x/signals.html#c.uv_signal_init>.
+
+Exceptions:
+
+$uv_signal must be defined. Otherwise an exception is thrown.
+
+If C<uv_signal_init> fails, an exception is thrown.
+
 =head2 DESTROY
 
 C<method DESTROY : void ();>

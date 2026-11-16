@@ -24,6 +24,8 @@ lib/SPVM/UV/Callback/Poll.pm
 lib/SPVM/UV/Callback/Poll.spvm
 lib/SPVM/UV/Callback/Read.pm
 lib/SPVM/UV/Callback/Read.spvm
+lib/SPVM/UV/Callback/Signal.pm
+lib/SPVM/UV/Callback/Signal.spvm
 lib/SPVM/UV/Callback/Timer.pm
 lib/SPVM/UV/Callback/Timer.spvm
 lib/SPVM/UV/Callback/Write.pm
