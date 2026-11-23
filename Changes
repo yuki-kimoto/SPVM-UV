@@ -1,3 +1,7 @@
+0.010 2026-11-24
+  [New Features]
+    * Add fileno method to UV::Handle.
+
 0.009 2026-11-16
   [Summary]
     * Support uv_fs_event_t.
