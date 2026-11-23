@@ -49,6 +49,9 @@ class TestCase::UV {
       
       Sys::Socket->send($fd2, "hello", 5, 0);
       
+      my $fd_from_handle = -1;
+      $poll->fileno(\$fd_from_handle);
+      
       $loop->run(UV_C->UV_RUN_DEFAULT);
       
       unless ($status_ref->[0] == 0) {
@@ -58,6 +61,12 @@ class TestCase::UV {
       unless ($read_length_ref->[0] == 5 && $read_data eq "hello") {
         return 0;
       }
+      
+      unless ($fd_from_handle == $fd1) {
+        diag;
+        return 0;
+      }
+      
     }
     
     # $fd1 -> $fd2
