@@ -84,6 +84,35 @@ int32_t SPVM__UV__Handle__get_type(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
+int32_t SPVM__UV__Handle__fileno(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  SPVM_OBJ* obj_uv_handle = stack[0].oval;
+  int32_t* fd_ref = stack[1].iref;
+  
+  if (!fd_ref) {
+    return env->die(env, stack, "The $fd_ref must not be undef.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  uv_handle_t* uv_handle = env->get_pointer(env, stack, obj_uv_handle);
+  if (!uv_handle) {
+    return env->die(env, stack, "The handle pointer must not be NULL.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  uv_os_fd_t uv_fd;
+  int32_t status = uv_fileno((const uv_handle_t*)uv_handle, &uv_fd);
+  if (status < 0) {
+    const char* err_name = uv_err_name(status);
+    const char* err_str = uv_strerror(status);
+    return env->die(env, stack, "uv_fileno failed: %s (%s)", __func__, FILE_NAME, __LINE__, err_name, err_str);
+  }
+  
+  *fd_ref = (int32_t)uv_fd;
+  
+  return 0;
+}
+
 int32_t SPVM__UV__Handle__DESTROY(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   SPVM_OBJ* obj_uv_handle = stack[0].oval;

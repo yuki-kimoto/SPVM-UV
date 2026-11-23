@@ -21,5 +21,7 @@ class UV::Handle : pointer {
   
   native method get_type : int ();
   
+  native method fileno : void ($fd_ref : int*);
+  
   native method DESTROY : void ();
 }

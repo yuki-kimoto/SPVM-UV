@@ -56,6 +56,20 @@ Returns the handle type.
 
 This method calls the L<uv_handle_get_type|https://docs.libuv.org/en/v1.x/handle.html#c.uv_handle_get_type> function.
 
+=head2 fileno
+
+C<method fileno : void ($fd_ref : int*);>
+
+Gets the platform-dependent file descriptor associated with the handle and stores it in C<$fd_ref>.
+
+This method calls the L<uv_fileno|https://docs.libuv.org/en/v1.x/handle.html#c.uv_fileno> function.
+
+Exceptions:
+
+C<$fd_ref> must not be C<undef>.
+
+If C<uv_fileno> fails, an exception is thrown.
+
 =head1 Well Known Child Classes
 
 =over 2
