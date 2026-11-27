@@ -3,6 +3,8 @@
 
 class UV::Loop : pointer {
   
+  version_from UV;
+  
   use UV;
   use UV::Handle;
   use UV::Handle::Idle;
