@@ -23,6 +23,7 @@ class UV::Loop : pointer {
   use UV::Callback::Close;
   use UV::Handle::Signal;
   use UV::Handle::FsEvent;
+  use UV::Handle::TCP;
   
   use UV::Handle::Process;
   use UV::ProcessOptions;
@@ -99,5 +100,7 @@ class UV::Loop : pointer {
   native method fs_event_init : void ($uv_fs_event : UV::Handle::FsEvent);
   
   native method alive : int ();
+  
+  native method tcp_init : void ($uv_tcp : UV::Handle::TCP);
   
 }
