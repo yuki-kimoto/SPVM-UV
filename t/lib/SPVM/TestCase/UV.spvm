@@ -49,7 +49,15 @@ class TestCase::UV {
       
       Sys::Socket->send($fd2, "hello", 5, 0);
       
+      unless ($loop->alive) {
+        return 0;
+      }
+      
       $loop->run(UV_C->UV_RUN_DEFAULT);
+      
+      if ($loop->alive) {
+        return 0;
+      }
       
       unless ($status_ref->[0] == 0) {
         return 0;

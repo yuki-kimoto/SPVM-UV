@@ -149,6 +149,12 @@ $uv_fs_event must be defined. Otherwise an exception is thrown.
 
 If C<uv_fs_event_init> fails, an exception is thrown.
 
+=head2 alive
+
+C<method alive : int ();>
+
+Returns a non-zero value if there are active handles or requests in the event loop, or 0 otherwise. See L<uv_loop_alive|https://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_alive>.
+
 =head2 DESTROY
 
 C<method DESTROY : void ();>

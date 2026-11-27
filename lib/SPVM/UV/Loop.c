@@ -520,3 +520,17 @@ int32_t SPVM__UV__Loop__fs_event_init(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   return 0;
 }
+
+int32_t SPVM__UV__Loop__alive(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  SPVM_OBJ* obj_uv_loop = stack[0].oval;
+  
+  uv_loop_t* uv_loop = env->get_pointer(env, stack, obj_uv_loop);
+  assert(uv_loop);
+  
+  int32_t is_alive = uv_loop_alive(uv_loop);
+  
+  stack[0].ival = is_alive;
+  
+  return 0;
+}

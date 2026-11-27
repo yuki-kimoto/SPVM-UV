@@ -96,4 +96,6 @@ class UV::Loop : pointer {
   
   native method fs_event_init : void ($uv_fs_event : UV::Handle::FsEvent);
   
+  native method alive : int ();
+  
 }
